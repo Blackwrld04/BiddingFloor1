@@ -2,7 +2,7 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 from typing import List, Dict, Any
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
@@ -219,17 +219,48 @@ async def reset_sim():
     await broadcast_event("SIMULATION_RESET", {})
     return {"status": "RESET_COMPLETE"}
 
+@app.get("/api/v1/config/groq/status")
+async def get_groq_status():
+    from agent.multi_agent.groq_reasoner import GroqReasoner
+    r = GroqReasoner()
+    return {
+        "is_configured": r.is_configured,
+        "model": r.model,
+        "engine": "Groq Tensor Streaming Processor" if r.is_configured else "Deterministic Fallback Engine"
+    }
+
+@app.post("/api/v1/config/groq")
+async def set_groq_config(req: Request):
+    data = await req.json()
+    key = data.get("api_key", "").strip()
+    model = data.get("model", "llama-3.3-70b-versatile").strip()
+    if not key or len(key) < 8:
+        raise HTTPException(status_code=400, detail="Invalid Groq API key format.")
+    
+    os.environ["GROQ_API_KEY"] = key
+    os.environ["GROQ_MODEL"] = model
+    
+    env_content = f"GROQ_API_KEY={key}\nGROQ_MODEL={model}\nGROQ_TIMEOUT_SEC=4.0\nSAMPLE_MODE=true\n"
+    with open(".env", "w") as f:
+        f.write(env_content)
+    
+    return {
+        "status": "SUCCESS",
+        "message": "Groq LPU active",
+        "model": model,
+        "is_configured": True
+    }
+
 @app.post("/api/v1/simulation/demo-preset")
 async def launch_demo_preset():
     market.history.clear()
     market.round_counter = 0
     market.node_active_workloads = {nid: [] for nid in market.nodes}
-    market.showcase_mode = True
+    market.showcase_mode = False
     market.simulation_speed = 1.0
     market.is_running = True
     await broadcast_event("SIMULATION_RESET", {})
-    await broadcast_event("SHOWCASE_TRIGGERED", {"mode": "GOLDEN_DEMO_ACTIVE"})
-    return {"status": "GOLDEN_DEMO_LAUNCHED"}
+    return {"status": "LIVE_MARKET_STARTED"}
 
 @app.websocket("/api/v1/ws/arena")
 async def websocket_endpoint(websocket: WebSocket):

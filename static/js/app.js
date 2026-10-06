@@ -171,13 +171,6 @@ function handleWsMessage(msg) {
             renderTopologyGrid(currentNodes, {}, null);
             break;
 
-        case "SHOWCASE_TRIGGERED":
-            const badge = document.getElementById('auctionStatusBadge');
-            badge.textContent = 'GOLDEN DEMO ACTIVE';
-            badge.style.color = 'var(--gold)';
-            badge.style.background = 'transparent';
-            break;
-
         case "AUCTION_OPENED":
             renderActiveAuction(msg.data);
             break;
@@ -793,13 +786,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => console.error("Initial history fetch error:", err));
 
-    const btnGolden = document.getElementById('btnGoldenDemo');
-    if (btnGolden) {
-        btnGolden.onclick = () => {
-            fetch('/api/v1/simulation/demo-preset', { method: 'POST' });
-        };
-    }
-
     document.getElementById('btnStart').onclick = () => fetch('/api/v1/simulation/start', { method: 'POST' });
     document.getElementById('btnPause').onclick = () => fetch('/api/v1/simulation/pause', { method: 'POST' });
     document.getElementById('btnReset').onclick = () => fetch('/api/v1/simulation/reset', { method: 'POST' });
@@ -847,4 +833,81 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleChartFullscreen();
         }
     });
+
+    // -------------------------------------------------------------
+    // Groq LPU Configuration Modal & Live Status Handlers
+    // -------------------------------------------------------------
+    function checkGroqStatus() {
+        fetch('/api/v1/config/groq/status')
+            .then(r => r.json())
+            .then(data => {
+                const dot = document.getElementById('groqStatusDot');
+                const label = document.getElementById('groqStatusLabel');
+                const badge = document.getElementById('groqStatusBadge');
+                if (data.is_configured) {
+                    if (dot) dot.style.background = '#10B981';
+                    if (label) label.textContent = `Groq LPU: Active`;
+                    if (badge) badge.textContent = `Groq LPU (${data.model.split('-')[1] || '70B'})`;
+                } else {
+                    if (dot) dot.style.background = '#F59E0B';
+                    if (label) label.textContent = 'Groq LPU: Configure';
+                }
+            })
+            .catch(() => {});
+    }
+    checkGroqStatus();
+
+    const groqModal = document.getElementById('groqModal');
+    const btnGroqConfig = document.getElementById('btnGroqConfig');
+    const btnCloseGroqModal = document.getElementById('btnCloseGroqModal');
+    const btnCancelGroq = document.getElementById('btnCancelGroq');
+    const btnSaveGroq = document.getElementById('btnSaveGroq');
+    const inputGroqKey = document.getElementById('inputGroqKey');
+    const selectGroqModel = document.getElementById('selectGroqModel');
+
+    if (btnGroqConfig) {
+        btnGroqConfig.onclick = () => {
+            if (groqModal) groqModal.style.display = 'flex';
+        };
+    }
+    if (btnCloseGroqModal) {
+        btnCloseGroqModal.onclick = () => {
+            if (groqModal) groqModal.style.display = 'none';
+        };
+    }
+    if (btnCancelGroq) {
+        btnCancelGroq.onclick = () => {
+            if (groqModal) groqModal.style.display = 'none';
+        };
+    }
+    if (btnSaveGroq) {
+        btnSaveGroq.onclick = async () => {
+            const key = inputGroqKey ? inputGroqKey.value.trim() : '';
+            const model = selectGroqModel ? selectGroqModel.value : 'llama-3.3-70b-versatile';
+            if (!key) {
+                alert('Please enter your Groq API key (starts with gsk_...)');
+                return;
+            }
+            btnSaveGroq.textContent = 'Activating...';
+            try {
+                const res = await fetch('/api/v1/config/groq', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: key, model: model })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    if (groqModal) groqModal.style.display = 'none';
+                    checkGroqStatus();
+                    btnSaveGroq.textContent = 'Save & Activate';
+                } else {
+                    alert(result.detail || 'Failed to save Groq API key.');
+                    btnSaveGroq.textContent = 'Save & Activate';
+                }
+            } catch (err) {
+                alert('Error connecting Groq API: ' + err.message);
+                btnSaveGroq.textContent = 'Save & Activate';
+            }
+        };
+    }
 });

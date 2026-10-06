@@ -634,6 +634,29 @@ body {
     font-size: 20px !important;
 }
 
+/* Groq Configuration Modal */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(24, 25, 28, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    width: 90%;
+    max-width: 440px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35);
+}
+
 /* Right Horizon Card (Calendar & Capacity Dial) */
 .horizon-card {
     display: flex;
@@ -1265,16 +1288,6 @@ body {
                     <li><a href="#leaderboard" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"/></svg></span> Leaderboard</a></li>
                     <li><a href="#analytics" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analytics</a></li>
                 </ul>
-
-                <!-- Promo Card (Matches 'Upgrade To Pro' Card in Design Image) -->
-                <div class="sidebar-promo-card">
-                    <div class="promo-title">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        Golden Demo
-                    </div>
-                    <p class="promo-desc">Trigger the curated 10-round benchmark presentation for hackathon evaluation.</p>
-                    <button id="btnGoldenDemo" class="btn-promo">Run Demo Mode</button>
-                </div>
             </div>
         </aside>
 
@@ -1286,7 +1299,11 @@ body {
                     <h1>Dashboard</h1>
                 </div>
 
-                <div class="header-right-tools">
+                <div class="header-right-tools" style="display: flex; align-items: center; gap: 10px;">
+                    <button id="btnGroqConfig" class="header-btn" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border: 1px solid var(--border-subtle); background: #FFFFFF; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <span id="groqStatusDot" style="width: 7px; height: 7px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span>
+                        <span id="groqStatusLabel">Groq LPU: Configure</span>
+                    </button>
                     <div class="user-avatar-btn" title="CognitiveSwarm AI Agent">AI</div>
                 </div>
             </header>
@@ -1593,6 +1610,38 @@ body {
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Groq API Key Configuration Modal -->
+    <div id="groqModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 15px; font-weight: 800; color: #18191C; display: flex; align-items: center; gap: 6px; margin: 0;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Groq LPU Engine Configuration
+                </h3>
+                <button id="btnCloseGroqModal" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #6B7280; padding: 2px 6px;">✕</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5;">
+                Connect your Groq API key to power real-time LLM multi-agent bidding deliberation and critique on ultra-low latency LPUs (&lt;300ms).
+            </p>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 6px;">GROQ API KEY</label>
+                <input id="inputGroqKey" type="password" placeholder="gsk_..." style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 12px; outline: none; box-sizing: border-box;" />
+            </div>
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 6px;">MODEL</label>
+                <select id="selectGroqModel" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 12px; outline: none; box-sizing: border-box;">
+                    <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Recommended)</option>
+                    <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Fastest ~120ms)</option>
+                    <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button id="btnCancelGroq" class="header-btn" style="padding: 7px 14px; font-size: 12px;">Cancel</button>
+                <button id="btnSaveGroq" class="header-btn btn-primary" style="padding: 7px 16px; font-size: 12px; font-weight: 700;">Save & Activate</button>
+            </div>
+        </div>
     </div>
 
     <!-- Live Arena Controller -->

@@ -81,11 +81,33 @@ class GroqReasoner:
     Provides real-time multi-agent deliberation and critique traces.
     """
     def __init__(self):
-        self.api_key = os.getenv("GROQ_API_KEY", "").strip()
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+        self._api_key: Optional[str] = None
+        self._model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
         self.api_url = "https://api.groq.com/openai/v1/chat/completions"
-        self.timeout_sec = float(os.getenv("GROQ_TIMEOUT_SEC", "2.0"))
+        self.timeout_sec = float(os.getenv("GROQ_TIMEOUT_SEC", "4.0"))
         self.sponsor_hub = SponsorIntegrationHub()
+
+    @property
+    def api_key(self) -> str:
+        if self._api_key is not None:
+            return self._api_key
+        key = os.getenv("GROQ_API_KEY", "").strip()
+        if not key:
+            load_dotenv(override=True)
+            key = os.getenv("GROQ_API_KEY", "").strip()
+        return key
+
+    @api_key.setter
+    def api_key(self, value: str):
+        self._api_key = value
+
+    @property
+    def model(self) -> str:
+        return os.getenv("GROQ_MODEL", self._model).strip()
+
+    @model.setter
+    def model(self, value: str):
+        self._model = value
 
     @property
     def is_configured(self) -> bool:

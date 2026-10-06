@@ -5,6 +5,9 @@ import time
 import os
 import signal
 import httpx
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from agent.main import run_agent
 
