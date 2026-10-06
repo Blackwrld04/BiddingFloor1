@@ -40,8 +40,8 @@ async def main():
             "--port", str(COORDINATOR_PORT),
             "--log-level", "warning"
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
     )
 
     try:
