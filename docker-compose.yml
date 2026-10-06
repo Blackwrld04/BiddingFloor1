@@ -1,0 +1,20 @@
+services:
+  coordinator:
+    build: .
+    command: uvicorn coordinator.app:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  smart_agent:
+    build: .
+    command: python -m agent.main --url http://coordinator:8000 --strategy hybrid
+    depends_on:
+      - coordinator
+    environment:
+      - PYTHONUNBUFFERED=1
+      - COORDINATOR_URL=http://coordinator:8000
+      - STRATEGY=hybrid
+    restart: unless-stopped

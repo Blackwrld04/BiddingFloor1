@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoGNETs Edge Auction Arena | Veles Hack 2026</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="navbar glass">
+            <div class="nav-brand">
+                <div class="logo-orb pulse"></div>
+                <div>
+                    <h1>CoGNETs <span>Edge Arena</span></h1>
+                    <p class="subtitle">Veles Hack 2026 • Dynamic Decentralized Resource Scheduling</p>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <div class="status-badge" id="connectionStatus">
+                    <span class="status-dot green"></span>
+                    <span class="status-text">Connected</span>
+                </div>
+                
+                <div class="control-group">
+                    <button id="btnGoldenDemo" class="btn btn-gold" title="Play curated 10-round benchmark presentation">⭐ 1-Click Golden Demo</button>
+                    <button id="btnPause" class="btn btn-secondary">⏸ Pause</button>
+                    <button id="btnStart" class="btn btn-primary">▶ Resume</button>
+                    <div class="speed-toggle">
+                        <button class="btn-speed active" data-speed="1.0">1x</button>
+                        <button class="btn-speed" data-speed="2.0">2x</button>
+                        <button class="btn-speed" data-speed="4.0">4x</button>
+                    </div>
+                    <button id="btnReset" class="btn btn-danger">↺ Reset</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI Metrics Ribbon -->
+        <section class="kpi-grid">
+            <div class="kpi-card glass">
+                <div class="kpi-label">Market Leader</div>
+                <div class="kpi-value gold" id="kpiLeader">CognitiveSwarmBot</div>
+                <div class="kpi-sub" id="kpiLeaderProfit">+€0.00 Profit</div>
+            </div>
+            <div class="kpi-card glass">
+                <div class="kpi-label">Active Round</div>
+                <div class="kpi-value cyan" id="kpiRound">Round #0</div>
+                <div class="kpi-sub" id="kpiTaskType">Awaiting Auction...</div>
+            </div>
+            <div class="kpi-card glass">
+                <div class="kpi-label">Clearing Mechanism</div>
+                <div class="kpi-value purple">Vickrey 2nd-Price</div>
+                <div class="kpi-sub">Green-Weighted Reverse</div>
+            </div>
+            <div class="kpi-card glass">
+                <div class="kpi-label">Our Agent Green Ratio</div>
+                <div class="kpi-value green">85% Renewable</div>
+                <div class="kpi-sub">Score Bonus Active (+15%)</div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard Content -->
+        <main class="dashboard-grid">
+            <!-- Left Column: Graphs & Live Bidding -->
+            <div class="content-col left-col">
+                <!-- Cumulative Profit Over Time -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>📈 Cumulative Profit Comparison (€)</h2>
+                        <span class="tag">Real-Time</span>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="profitChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Live Round Bidding Arena -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>⚡ Live Bidding Floor</h2>
+                        <span class="badge" id="auctionStatusBadge">WAITING</span>
+                    </div>
+                    <div id="liveBiddingContainer" class="live-bidding-card">
+                        <div class="task-spec-box" id="taskSpecDetails">
+                            <div class="spec-row">
+                                <span class="spec-label">Task:</span>
+                                <span class="spec-val" id="taskName">None</span>
+                                <span class="spec-label">CPU:</span>
+                                <span class="spec-val" id="taskCpu">-</span>
+                                <span class="spec-label">RAM:</span>
+                                <span class="spec-val" id="taskRam">-</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Base Cost:</span>
+                                <span class="spec-val" id="taskCost">-</span>
+                                <span class="spec-label">Buyer Max Budget:</span>
+                                <span class="spec-val" id="taskBudget">-</span>
+                                <span class="spec-label">Deadline:</span>
+                                <span class="spec-val" id="taskDeadline">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Bot Bid Visual Comparison -->
+                        <div class="bids-visual-list" id="bidsVisualList">
+                            <!-- Populated dynamically -->
+                            <p class="empty-state">Waiting for next auction cycle...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Agent Reasoning & Deliberation Inspector (Open Agent Hackathon) -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>🧠 Multi-Agent Deliberation & Explainability Trace</h2>
+                        <span class="tag purple-tag">Track 4: Reasoning Architecture</span>
+                    </div>
+                    <div class="agent-trace-box" id="agentTraceBox">
+                        <div class="trace-header">
+                            <span class="trace-title">Active Consensus Stream</span>
+                            <span class="confidence-badge" id="traceConfidenceBadge">Awaiting Decision</span>
+                        </div>
+                        <div class="deliberation-stream" id="deliberationStream">
+                            <div class="agent-thought-item placeholder-thought">
+                                <span class="thought-role">🤖 CognitiveSwarm Team</span>
+                                <p class="thought-body">Multi-Agent Deliberation loop standing by for next auction round...</p>
+                            </div>
+                        </div>
+                        <div class="sponsor-tags-ribbon" id="sponsorTagsRibbon">
+                            <span class="sponsor-chip">🛡️ NVIDIA NeMo: Enforcing SLA</span>
+                            <span class="sponsor-chip">📊 Meterless: Micro-Metering</span>
+                            <span class="sponsor-chip">🌐 Zetaris: Virtualized Edge Silos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Leaderboard & Telemetry -->
+            <div class="content-col right-col">
+                <!-- Leaderboard -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>🏆 Market Leaderboard</h2>
+                        <span class="tag gold-tag">Game-Theory Rank</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Agent</th>
+                                    <th>Wins</th>
+                                    <th>Win %</th>
+                                    <th>Profit (€)</th>
+                                    <th>SLA Flags</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Edge Cluster Topology Grid -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>🌐 Edge Cluster Topology Matrix</h2>
+                        <span class="tag cyan-tag">Live Infrastructure</span>
+                    </div>
+                    <div class="topology-grid" id="topologyGrid">
+                        <!-- Populated dynamically with interactive node cards -->
+                    </div>
+                </div>
+
+                <!-- Node Hardware Telemetry -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>🖥️ Resource Capacity Telemetry</h2>
+                        <span class="tag">Hardware Guards</span>
+                    </div>
+                    <div class="node-telemetry-list" id="telemetryList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Pitch Highlights Card -->
+                <div class="panel glass highlight-panel">
+                    <div class="panel-header">
+                        <h2>💡 Game-Theoretic Advantage</h2>
+                    </div>
+                    <ul class="pitch-points">
+                        <li><strong>Dynamic Congestion Gating:</strong> Bypasses low-margin tasks during load spikes to eliminate SLA breach penalties.</li>
+                        <li><strong>Green Surplus Arbitrage:</strong> Capitalizes on 85% solar ratio to shade bids upwards while still beating competitors on effective score.</li>
+                        <li><strong>ZIP Adaptive Margins:</strong> Real-time convergence to Nash Equilibrium clearing price.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
