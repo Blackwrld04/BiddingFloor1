@@ -82,10 +82,13 @@ class GroqReasoner:
     """
     def __init__(self):
         self._api_key: Optional[str] = None
-        self._model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+        self._model = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b").strip()
         self.api_url = "https://api.groq.com/openai/v1/chat/completions"
         self.timeout_sec = float(os.getenv("GROQ_TIMEOUT_SEC", "4.0"))
         self.sponsor_hub = SponsorIntegrationHub()
+        self._last_call_time: float = 0.0
+        self._cooldown_until: float = 0.0
+        self.dispatch_interval_sec: float = float(os.getenv("GROQ_DISPATCH_INTERVAL_SEC", "12.0"))
 
     @property
     def api_key(self) -> str:
@@ -119,41 +122,49 @@ class GroqReasoner:
         load_pct = state.get_cpu_utilization() * 100
         budget_ratio = round(task.max_budget / max(0.01, task.base_cost), 2)
 
-        user_content = json.dumps({
-            "task": {
-                "task_id": task.task_id,
-                "task_type": task.task_type,
-                "required_cpu": task.required_cpu,
-                "required_ram_mb": task.required_ram_mb,
-                "base_cost": task.base_cost,
-                "max_budget": task.max_budget,
-                "budget_ratio": budget_ratio,
-                "deadline_sec": task.deadline_sec
-            },
-            "edge_node": {
-                "node_id": state.node_id,
-                "total_cpu_cores": state.cpu_cores,
-                "used_cpu_cores": used_cpu,
-                "current_load_pct": round(load_pct, 1),
-                "green_energy_ratio": state.green_energy_ratio,
-                "active_tasks_count": len(state.active_tasks)
-            },
-            "market_context": {
-                "round_number": auction.round_number,
-                "adaptive_margin_hint": round(adaptive_margin, 3),
-                "overload_threshold_pct": 85.0
-            }
-        })
+        user_content = (
+            "Evaluate this auction task and edge node state. Return a JSON object conforming strictly to the 4-step deliberation schema:\n"
+            + json.dumps({
+                "task": {
+                    "task_id": task.task_id,
+                    "task_type": task.task_type,
+                    "required_cpu": task.required_cpu,
+                    "required_ram_mb": task.required_ram_mb,
+                    "base_cost": task.base_cost,
+                    "max_budget": task.max_budget,
+                    "budget_ratio": budget_ratio,
+                    "deadline_sec": task.deadline_sec
+                },
+                "edge_node": {
+                    "node_id": state.node_id,
+                    "total_cpu_cores": state.cpu_cores,
+                    "used_cpu_cores": used_cpu,
+                    "current_load_pct": round(load_pct, 1),
+                    "green_energy_ratio": state.green_energy_ratio,
+                    "active_tasks_count": len(state.active_tasks)
+                },
+                "market_context": {
+                    "round_number": auction.round_number,
+                    "adaptive_margin_hint": round(adaptive_margin, 3),
+                    "overload_threshold_pct": 85.0
+                }
+            })
+        )
+
+        concise_system = (
+            SYSTEM_PROMPT
+            + "\nConstraint: Keep each agent role thought under 22 words so response fits in concise JSON."
+        )
 
         return {
             "model": self.model,
             "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": concise_system},
                 {"role": "user", "content": user_content}
             ],
             "response_format": {"type": "json_object"},
             "temperature": 0.2,
-            "max_tokens": 900
+            "max_tokens": 380
         }
 
     def _parse_groq_response(
@@ -248,6 +259,19 @@ class GroqReasoner:
             sponsor_telemetry=sponsor_telemetry
         )
 
+    def _extract_cooldown_from_error(self, res: httpx.Response) -> float:
+        """Extracts seconds to wait from Groq 429 response or returns a safe 15s default."""
+        try:
+            err_data = res.json()
+            msg = err_data.get("error", {}).get("message", "")
+            import re
+            m = re.search(r"try again in ([0-9.]+)s", msg)
+            if m:
+                return float(m.group(1)) + 1.0
+        except Exception:
+            pass
+        return 15.0
+
     async def deliberate_async(
         self,
         auction: AuctionSpec,
@@ -256,6 +280,12 @@ class GroqReasoner:
     ) -> Optional[DeliberationResult]:
         """Calls Groq API asynchronously to generate real LLM deliberation."""
         if not self.is_configured:
+            return None
+
+        now = time.time()
+        if now < self._cooldown_until:
+            return None
+        if self.dispatch_interval_sec > 0 and (now - self._last_call_time) < self.dispatch_interval_sec:
             return None
 
         payload = self._build_payload(auction, state, adaptive_margin)
@@ -271,10 +301,16 @@ class GroqReasoner:
                 latency_ms = (time.time() - start_time) * 1000.0
 
                 if res.status_code == 200:
+                    self._last_call_time = time.time()
                     data = res.json()
                     content = data["choices"][0]["message"]["content"]
                     parsed = json.loads(content)
                     return self._parse_groq_response(parsed, auction, state, latency_ms)
+                elif res.status_code == 429:
+                    cooldown = self._extract_cooldown_from_error(res)
+                    self._cooldown_until = time.time() + cooldown
+                    logger.info(f"[Groq LPU] Rate ceiling reached; pacing for {cooldown:.1f}s (autonomous fallback active)")
+                    return None
                 else:
                     logger.warning(f"Groq API error HTTP {res.status_code}: {res.text[:200]}")
                     return None
@@ -292,6 +328,12 @@ class GroqReasoner:
         if not self.is_configured:
             return None
 
+        now = time.time()
+        if now < self._cooldown_until:
+            return None
+        if self.dispatch_interval_sec > 0 and (now - self._last_call_time) < self.dispatch_interval_sec:
+            return None
+
         payload = self._build_payload(auction, state, adaptive_margin)
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -305,10 +347,16 @@ class GroqReasoner:
                 latency_ms = (time.time() - start_time) * 1000.0
 
                 if res.status_code == 200:
+                    self._last_call_time = time.time()
                     data = res.json()
                     content = data["choices"][0]["message"]["content"]
                     parsed = json.loads(content)
                     return self._parse_groq_response(parsed, auction, state, latency_ms)
+                elif res.status_code == 429:
+                    cooldown = self._extract_cooldown_from_error(res)
+                    self._cooldown_until = time.time() + cooldown
+                    logger.info(f"[Groq LPU] Rate ceiling reached; pacing for {cooldown:.1f}s (autonomous fallback active)")
+                    return None
                 else:
                     logger.warning(f"Groq API error HTTP {res.status_code}: {res.text[:200]}")
                     return None
