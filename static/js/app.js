@@ -4,10 +4,10 @@ let profitChart = null;
 let ws = null;
 let roundsData = [];
 const botColors = {
-    "edge_agent_smart_04": { border: "#06B6D4", bg: "rgba(6, 182, 212, 0.15)", name: "CognitiveSwarmBot (Champion)" },
-    "node_random_01": { border: "#F59E0B", bg: "rgba(245, 158, 11, 0.1)", name: "RandomBot" },
-    "node_greedy_02": { border: "#F43F5E", bg: "rgba(244, 63, 94, 0.1)", name: "GreedyBot" },
-    "node_static_03": { border: "#A855F7", bg: "rgba(168, 85, 247, 0.1)", name: "StaticBot" }
+    "edge_agent_smart_04": { border: "#18191C", bg: "rgba(24, 25, 28, 0.06)", name: "CognitiveSwarmBot (Champion)" },
+    "node_random_01": { border: "#F59E0B", bg: "rgba(245, 158, 11, 0.05)", name: "RandomBot" },
+    "node_greedy_02": { border: "#EF4444", bg: "rgba(239, 68, 68, 0.05)", name: "GreedyBot" },
+    "node_static_03": { border: "#8B5CF6", bg: "rgba(139, 92, 246, 0.05)", name: "StaticBot" }
 };
 
 // Initialize Chart.js
@@ -24,36 +24,40 @@ function initChart() {
                 backgroundColor: botColors[botId].bg,
                 borderWidth: botId.includes("smart") ? 3 : 2,
                 pointRadius: botId.includes("smart") ? 4 : 2,
-                tension: 0.3,
+                tension: 0.35,
                 fill: botId.includes("smart")
             }))
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 400 },
+            animation: { duration: 350 },
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { color: '#94A3B8', font: { family: 'Outfit', size: 11 } }
+                    labels: { color: '#4B5563', font: { family: 'Outfit', size: 11, weight: '600' } }
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                    titleFont: { family: 'Outfit', size: 12 },
+                    backgroundColor: '#18191C',
+                    titleColor: '#FFFFFF',
+                    bodyColor: '#E5E7EB',
+                    cornerRadius: 8,
+                    padding: 10,
+                    titleFont: { family: 'Outfit', size: 12, weight: '700' },
                     bodyFont: { family: 'JetBrains Mono', size: 11 }
                 }
             },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 10 } }
+                    grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                    ticks: { color: '#9CA3AF', font: { family: 'JetBrains Mono', size: 10 } }
                 },
                 y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    grid: { color: 'rgba(0, 0, 0, 0.04)' },
                     ticks: {
-                        color: '#64748B',
+                        color: '#9CA3AF',
                         font: { family: 'JetBrains Mono', size: 10 },
                         callback: val => '€' + val.toFixed(1)
                     }
