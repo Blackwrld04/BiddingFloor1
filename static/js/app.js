@@ -26,20 +26,30 @@ function initChart() {
                 data: [],
                 backgroundColor: botColors[botId].bg,
                 borderColor: botColors[botId].border,
-                borderRadius: 8,
+                borderRadius: 6,
                 borderSkipped: false,
-                barPercentage: 0.65,
-                categoryPercentage: 0.75
+                barPercentage: 0.8,
+                categoryPercentage: 0.8
             }))
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 350 },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            animation: { duration: 300 },
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { color: '#4B5563', font: { family: 'Outfit', size: 11, weight: '600' } }
+                    labels: {
+                        color: '#4B5563',
+                        font: { family: 'Outfit', size: 11, weight: '600' },
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        padding: 10
+                    }
                 },
                 tooltip: {
                     backgroundColor: '#18191C',
@@ -48,20 +58,23 @@ function initChart() {
                     cornerRadius: 8,
                     padding: 10,
                     titleFont: { family: 'Outfit', size: 12, weight: '700' },
-                    bodyFont: { family: 'JetBrains Mono', size: 11 }
+                    bodyFont: { family: 'JetBrains Mono', size: 11 },
+                    callbacks: {
+                        label: (ctx) => ` ${ctx.dataset.label}: €${Number(ctx.parsed.y || 0).toFixed(2)}`
+                    }
                 }
             },
             scales: {
                 x: {
                     grid: { display: false },
-                    ticks: { color: '#8E929B', font: { family: 'Outfit', size: 11, weight: '600' } }
+                    ticks: { color: '#8E929B', font: { family: 'Outfit', size: 11, weight: '700' } }
                 },
                 y: {
                     grid: { color: 'rgba(0, 0, 0, 0.04)' },
                     ticks: {
                         color: '#8E929B',
-                        font: { family: 'Outfit', size: 11 },
-                        callback: val => '€' + Number(val).toFixed(1)
+                        font: { family: 'Outfit', size: 11, weight: '600' },
+                        callback: val => '€' + Number(val).toFixed(2)
                     }
                 }
             }
@@ -69,25 +82,28 @@ function initChart() {
     });
 
     // Chart mode switcher listeners
-    document.getElementById('btnChartBars')?.addEventListener('click', (e) => {
+    document.getElementById('btnChartBars')?.addEventListener('click', () => {
         document.getElementById('btnChartBars')?.classList.add('active');
         document.getElementById('btnChartLines')?.classList.remove('active');
         profitChart.config.type = 'bar';
         profitChart.data.datasets.forEach(ds => {
-            ds.borderRadius = 8;
+            ds.borderRadius = 6;
             ds.tension = 0;
             ds.fill = false;
+            ds.pointRadius = 0;
         });
         profitChart.update();
     });
 
-    document.getElementById('btnChartLines')?.addEventListener('click', (e) => {
+    document.getElementById('btnChartLines')?.addEventListener('click', () => {
         document.getElementById('btnChartLines')?.classList.add('active');
         document.getElementById('btnChartBars')?.classList.remove('active');
         profitChart.config.type = 'line';
         profitChart.data.datasets.forEach(ds => {
             ds.borderRadius = 0;
-            ds.tension = 0.35;
+            ds.tension = 0.3;
+            ds.pointRadius = 3;
+            ds.pointHoverRadius = 5;
             ds.fill = ds.label.includes('Cognitive');
             ds.backgroundColor = ds.label.includes('Cognitive') ? 'rgba(24, 25, 28, 0.06)' : 'transparent';
         });
@@ -148,6 +164,9 @@ function handleWsMessage(msg) {
                 // Find latest history item with deliberation steps
                 const lastWithTrace = [...msg.data.history].reverse().find(h => h.deliberation_steps || h.reasoning_trace);
                 if (lastWithTrace) renderDeliberationStream(lastWithTrace);
+                renderChartFromHistory(msg.data.history);
+            } else if (msg.data.leaderboard && msg.data.leaderboard.length > 0) {
+                renderChartFromLeaderboard(msg.data.leaderboard);
             }
             renderTopologyGrid(currentNodes, {}, null);
             break;
@@ -515,10 +534,71 @@ function renderLeaderboard(leaderboard) {
     });
 }
 
+function renderChartFromHistory(history) {
+    if (!profitChart || !history || history.length === 0) return;
+
+    const sorted = [...history]
+        .filter(h => h.round_number !== undefined)
+        .sort((a, b) => a.round_number - b.round_number);
+    
+    if (sorted.length === 0) return;
+
+    // View last 8-10 rounds cleanly without overcrowding
+    const recent = sorted.slice(-10);
+
+    const cumulativeTotals = {};
+    Object.keys(botColors).forEach(k => cumulativeTotals[k] = 0);
+
+    const earlierCount = sorted.length - recent.length;
+    for (let i = 0; i < earlierCount; i++) {
+        const item = sorted[i];
+        if (item.winner_node_id && cumulativeTotals[item.winner_node_id] !== undefined) {
+            cumulativeTotals[item.winner_node_id] += (item.profit || 0);
+        }
+    }
+
+    const labels = [];
+    const seriesByBot = {};
+    Object.keys(botColors).forEach(k => seriesByBot[k] = []);
+
+    recent.forEach(item => {
+        labels.push(`R${item.round_number}`);
+        if (item.winner_node_id && cumulativeTotals[item.winner_node_id] !== undefined) {
+            cumulativeTotals[item.winner_node_id] += (item.profit || 0);
+        }
+        Object.keys(botColors).forEach(k => {
+            seriesByBot[k].push(Number(cumulativeTotals[k].toFixed(2)));
+        });
+    });
+
+    profitChart.data.labels = labels;
+    profitChart.data.datasets.forEach(ds => {
+        const botId = Object.keys(botColors).find(k => botColors[k].name === ds.label);
+        if (botId && seriesByBot[botId]) {
+            ds.data = seriesByBot[botId];
+        }
+    });
+
+    profitChart.update();
+}
+
+function renderChartFromLeaderboard(leaderboard) {
+    if (!profitChart || !leaderboard || leaderboard.length === 0) return;
+    if (profitChart.data.labels.length > 0) return;
+
+    profitChart.data.labels = ['R1'];
+    profitChart.data.datasets.forEach(ds => {
+        const botId = Object.keys(botColors).find(k => botColors[k].name === ds.label);
+        const entry = leaderboard.find(l => l.node_id === botId);
+        ds.data = [entry ? Number(entry.cumulative_profit.toFixed(2)) : 0];
+    });
+    profitChart.update();
+}
+
 function updateChart(roundNumber, leaderboard) {
     if (!profitChart) return;
 
-    if (profitChart.data.labels.length > 8) {
+    if (profitChart.data.labels.length >= 10) {
         profitChart.data.labels.shift();
         profitChart.data.datasets.forEach(ds => ds.data.shift());
     }
@@ -531,10 +611,9 @@ function updateChart(roundNumber, leaderboard) {
     });
 
     profitChart.data.datasets.forEach(ds => {
-        // match by bot id key
         const botId = Object.keys(botColors).find(k => botColors[k].name === ds.label);
         if (botId && botMap[botId] !== undefined) {
-            ds.data.push(botMap[botId]);
+            ds.data.push(Number(botMap[botId].toFixed(2)));
         } else {
             ds.data.push(0);
         }
@@ -703,6 +782,16 @@ function resetClientState() {
 document.addEventListener('DOMContentLoaded', () => {
     initChart();
     connectWebSocket();
+
+    // Fetch initial history immediately so chart displays without delay
+    fetch('/api/v1/auctions/history')
+        .then(r => r.json())
+        .then(history => {
+            if (history && history.length > 0) {
+                renderChartFromHistory(history);
+            }
+        })
+        .catch(err => console.error("Initial history fetch error:", err));
 
     const btnGolden = document.getElementById('btnGoldenDemo');
     if (btnGolden) {
