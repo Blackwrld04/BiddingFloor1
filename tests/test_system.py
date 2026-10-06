@@ -201,3 +201,42 @@ def test_multi_agent_capacity_guardian_objection():
     assert len(objection_steps) >= 1
     assert objection_steps[0].role == AgentRole.CAPACITY_GUARDIAN
 
+def test_groq_reasoner_fallback_and_payload():
+    from agent.multi_agent.groq_reasoner import GroqReasoner
+
+    reasoner = GroqReasoner()
+    # Unconfigured key should be safe and return None without exceptions
+    reasoner.api_key = ""
+    assert reasoner.is_configured is False
+
+    task = TaskSpec(
+        task_id="t_groq_test",
+        task_type="yolo_inference",
+        required_cpu=2.0,
+        required_ram_mb=2048,
+        execution_duration_sec=3.0,
+        max_budget=5.0,
+        deadline_sec=5.0,
+        base_cost=1.8
+    )
+    auction = AuctionSpec(
+        auction_id="auc_groq_test",
+        round_number=1,
+        task=task,
+        created_at=100.0,
+        duration_sec=2.0,
+        status="OPEN"
+    )
+    state = NodeState(node_id="test_node", cpu_cores=8.0, ram_mb=16384, green_energy_ratio=0.85)
+
+    payload = reasoner._build_payload(auction, state, adaptive_margin=0.15)
+    assert payload["model"] == reasoner.model
+    assert "messages" in payload
+    assert len(payload["messages"]) == 2
+    assert "task" in payload["messages"][1]["content"]
+
+    # Synchronous deliberate returns None on unconfigured key
+    res = reasoner.deliberate_sync(auction, state, adaptive_margin=0.15)
+    assert res is None
+
+

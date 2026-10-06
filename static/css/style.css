@@ -665,6 +665,13 @@ body {
     border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
+.groq-tag {
+    background: rgba(249, 115, 22, 0.15);
+    color: #FB923C;
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    font-weight: 700;
+}
+
 /* Multi-Agent Reasoning Inspector Styles */
 .agent-trace-box {
     display: flex;

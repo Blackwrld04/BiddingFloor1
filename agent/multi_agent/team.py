@@ -8,11 +8,13 @@ from agent.multi_agent.models import (
     DeliberationResult
 )
 from agent.multi_agent.sponsor_integrations import SponsorIntegrationHub
+from agent.multi_agent.groq_reasoner import GroqReasoner
 
 class MultiAgentDeliberationTeam:
     """
     Open Agent Hackathon 2026 Collaborative Multi-Agent System.
-    Implements dynamic feedback, critique loops, and explainable consensus:
+    Powered by Groq LPUs for real-time AI reasoning, with local
+    game-theoretic deterministic fallback.
     - MarketAnalyst (Proposer)
     - CapacityGuardian (Critic & SLA Protector)
     - GreenArbitrage (Energy & Pricing Moat Specialist)
@@ -20,13 +22,28 @@ class MultiAgentDeliberationTeam:
     """
     def __init__(self):
         self.sponsor_hub = SponsorIntegrationHub()
+        self.groq_reasoner = GroqReasoner()
         self.adaptive_margin = 0.12  # Dynamic ZIP feedback
 
     def update_market_feedback(self, delta: float):
         """Refines baseline margin based on market clearing delta."""
         self.adaptive_margin = max(0.04, min(0.60, self.adaptive_margin + delta))
 
+    async def deliberate_async(self, auction: AuctionSpec, state: NodeState) -> DeliberationResult:
+        """Asynchronously queries Groq LPU if configured, otherwise falls back."""
+        if self.groq_reasoner.is_configured:
+            groq_res = await self.groq_reasoner.deliberate_async(auction, state, self.adaptive_margin)
+            if groq_res is not None:
+                return groq_res
+        return self.deliberate(auction, state)
+
     def deliberate(self, auction: AuctionSpec, state: NodeState) -> DeliberationResult:
+        # Check Groq synchronous call if key configured
+        if self.groq_reasoner.is_configured:
+            groq_res = self.groq_reasoner.deliberate_sync(auction, state, self.adaptive_margin)
+            if groq_res is not None:
+                return groq_res
+
         task = auction.task
         steps: List[DeliberationStep] = []
         step_idx = 1
@@ -198,6 +215,11 @@ class MultiAgentDeliberationTeam:
             green_advantage_pct=green_moat_pct,
             sla_risk_level="LOW",
             sponsor_telemetry={
+                "groq_inference": {
+                    "status": "READY" if self.groq_reasoner.is_configured else "STANDBY_READY",
+                    "model": self.groq_reasoner.model,
+                    "engine": "Groq LPU (Configured)" if self.groq_reasoner.is_configured else "Deterministic Engine (Provide GROQ_API_KEY)"
+                },
                 "nvidia_guardrail": guardrail_result,
                 "meterless_metering": metering,
                 "zetaris_telemetry": zetaris_info

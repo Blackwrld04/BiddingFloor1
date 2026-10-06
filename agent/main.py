@@ -84,8 +84,11 @@ async def run_agent(
                 auction_task_cache[auction.auction_id] = task
                 cpu_load = state.get_cpu_utilization() * 100
 
-                # Calculate strategic bid
-                bid_price = strategy.calculate_bid(auction, state)
+                # Calculate strategic bid (async for Groq LPU reasoning if available)
+                if hasattr(strategy, "calculate_bid_async"):
+                    bid_price = await strategy.calculate_bid_async(auction, state)
+                else:
+                    bid_price = strategy.calculate_bid(auction, state)
                 delib = getattr(strategy, "last_deliberation", None)
 
                 if bid_price is not None:

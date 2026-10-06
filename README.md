@@ -53,19 +53,38 @@ The result: **0 SLA degradation penalties**, mathematically dominant profit clea
 |   - Entry bid modeling         - NeMo SLA policy check         - Renewable tariff inversion  - Multi-agent consensus   |
 |   - Budget ratio analysis      - Vetoes thermal overload       - +21% profit margin moat     - Generates audit trail   |
 |                                                                                                                    |
-|   =========================================== SPONSOR ECOSYSTEM ===============================================    |
-|   🛡️ NVIDIA NeMo: SLA Boundary Checks  |  📊 Meterless: Micro-Metering  |  🌐 Zetaris: Virtualized Edge Fabric      |
+|   =========================================== AI & SPONSOR ECOSYSTEM ==========================================    |
+|   ⚡ Groq LPU: Real-Time Multi-Agent AI  |  🛡️ NVIDIA NeMo: SLA Boundary  |  📊 Meterless  |  🌐 Zetaris Fabric    |
 +--------------------------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 🔬 Sponsor Integrations (`SAMPLE_MODE=true` Zero-Config)
+## ⚡ Real-Time AI Decision Engine: Groq LPU
 
-CognitiveSwarm integrates key sponsor platforms with automatic sample-mode fallback so the entire system runs locally out-of-the-box without requiring live paid credentials:
+Edge auctions clear in seconds; traditional LLM cloud APIs with 3–5 second latency would miss auction deadlines and cause market timeouts.
 
-* **🛡️ NVIDIA (NeMo Guardrails):** Validates task specifications against hardware envelope limits (`agent/multi_agent/sponsor_integrations.py`). If requested cores exceed available headroom, NeMo emits a hard policy violation, prompting the `CapacityGuardian` to veto the bid.
-* **📊 Meterless:** Automatically micro-meters CPU runtime consumption into billing micro-credits per task, maintaining an immutable ledger of edge compute consumption.
+CognitiveSwarm uses **Groq LPUs (Tensor Streaming Processors)** for ultra-low latency inference (~150ms–300ms round-trip):
+* **State-of-the-Art Reasoning:** Powered by `llama-3.3-70b-versatile` or `llama-3.1-8b-instant`.
+* **Dynamic Multi-Agent Deliberation:** Groq generates the live multi-agent dialogue—Market Analyst entry pricing, Capacity Guardian critique & vetoes, Green Arbitrage solar tariff inversion, and Synthesizer consensus.
+* **Zero-Crash Hybrid Fallback:** If `GROQ_API_KEY` is not provided or if network latency occurs, the system seamlessly uses our local deterministic game-theoretic engine without missing a beat.
+
+### Quick Setup for Groq
+Simply create a `.env` file from the provided template:
+```bash
+cp .env.example .env
+# Edit .env and paste your Groq key:
+# GROQ_API_KEY=gsk_your_key_here
+```
+
+---
+
+## 🔬 Sponsor Track Integrations (`SAMPLE_MODE=true` Zero-Cost Verification)
+
+Because hackathon builders often do not have paid enterprise accounts for all sponsor tools, CognitiveSwarm implements **simulated telemetry adapters** (`SAMPLE_MODE=true`). This proves complete architectural compatibility with the Open Agent Hackathon sponsor tracks with zero external dependency barriers:
+
+* **🛡️ NVIDIA (NeMo Guardrails):** Enforces policy boundary envelopes against hardware limits (`agent/multi_agent/sponsor_integrations.py`). Simulates policy validation preventing unsafe compute oversubscription.
+* **📊 Meterless:** Micro-meters CPU core runtime into compute micro-credits per task, maintaining an immutable ledger of edge compute consumption.
 * **🌐 Zetaris:** Simulates virtualized SQL queries (`sql://edge-virtualizer/metrics`) querying distributed node telemetry across isolated geographic edge silos without requiring central data ingestion.
 
 ---

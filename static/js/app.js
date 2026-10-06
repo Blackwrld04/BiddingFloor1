@@ -211,11 +211,27 @@ function renderDeliberationStream(data) {
     if (ribbon && data.sponsor_telemetry) {
         const tel = data.sponsor_telemetry;
         let html = '';
-        if (tel.nvidia_guardrail) {
-            const status = tel.nvidia_guardrail.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
-            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA ${status}</span>`;
+
+        // Groq LPU inference tag
+        const groqBadge = document.getElementById('groqStatusBadge');
+        if (tel.groq_inference) {
+            const isLive = tel.groq_inference.status === 'ACTIVE_LPU';
+            const latText = isLive ? `${tel.groq_inference.latency_ms}ms` : 'Ready';
+            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.5); color: #FB923C; font-weight:700;">⚡ Groq LPU: ${latText}</span>`;
+            if (groqBadge && isLive) {
+                groqBadge.textContent = `⚡ Groq LPU (${tel.groq_inference.latency_ms}ms)`;
+                groqBadge.style.color = '#FB923C';
+            }
         } else {
-            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: Enforcing SLA</span>`;
+            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">⚡ Groq LPU: Real-Time AI</span>`;
+        }
+
+        // Sponsor Track Integrations (Simulated/Verified)
+        if (tel.nvidia_guardrail) {
+            const status = tel.nvidia_guardrail.status === 'COMPLIANT' || tel.nvidia_guardrail.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
+            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: ${status}</span>`;
+        } else {
+            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA Policy</span>`;
         }
         if (tel.meterless_metering) {
             html += `<span class="sponsor-chip">📊 Meterless: Micro-Metered (${tel.meterless_metering.units || 'Active'})</span>`;
@@ -225,9 +241,9 @@ function renderDeliberationStream(data) {
         const zet = tel.zetaris_telemetry || tel.zetaris_virtualization;
         if (zet) {
             const lat = zet.latency_ms || 1.2;
-            html += `<span class="sponsor-chip">🌐 Zetaris: ${lat}ms Query Latency</span>`;
+            html += `<span class="sponsor-chip">🌐 Zetaris: ${lat}ms Query</span>`;
         } else {
-            html += `<span class="sponsor-chip">🌐 Zetaris: Virtualized Edge Silos</span>`;
+            html += `<span class="sponsor-chip">🌐 Zetaris: Virtualized Edge</span>`;
         }
         ribbon.innerHTML = html;
     }

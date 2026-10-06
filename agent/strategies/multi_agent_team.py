@@ -17,6 +17,13 @@ class MultiAgentReasoningStrategy(BaseBiddingStrategy):
         self.last_bid_price: Optional[float] = None
         self.last_auction_id: Optional[str] = None
 
+    async def calculate_bid_async(self, auction: AuctionSpec, state: NodeState) -> Optional[float]:
+        deliberation = await self.team.deliberate_async(auction, state)
+        self.last_deliberation = deliberation
+        self.last_bid_price = deliberation.final_bid
+        self.last_auction_id = auction.auction_id
+        return deliberation.final_bid
+
     def calculate_bid(self, auction: AuctionSpec, state: NodeState) -> Optional[float]:
         deliberation = self.team.deliberate(auction, state)
         self.last_deliberation = deliberation
