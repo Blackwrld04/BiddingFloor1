@@ -27,6 +27,7 @@ class AuctionRound(BaseModel):
     duration_sec: float = 2.0
     status: str = "OPEN"  # OPEN, CLOSED
     bids: Dict[str, float] = Field(default_factory=dict)  # node_id -> bid_price
+    game_theory_signals: Optional[Dict[str, Any]] = None
 
 class NodeRegistration(BaseModel):
     node_id: str
@@ -37,6 +38,8 @@ class NodeRegistration(BaseModel):
     location_zone: str = "eu-valencia-edge"
     green_energy_ratio: float = Field(default=0.5, ge=0.0, le=1.0)
     base_cost_per_core_sec: float = 0.05
+    strategy: str = "Adaptive"
+    budget_total: float = 100.0
 
 class BidSubmission(BaseModel):
     node_id: str
@@ -63,16 +66,23 @@ class BidOutcome(BaseModel):
     winner_trace: Optional[str] = None
     deliberation_steps: Optional[List[Dict[str, Any]]] = None
     sponsor_telemetry: Optional[Dict[str, Any]] = None
+    game_theory_signals: Optional[Dict[str, Any]] = None
 
 class LeaderboardEntry(BaseModel):
     node_id: str
     name: str
+    strategy: str = "Nash Equilibrium"
+    budget_total: float = 100.0
+    budget_spent: float = 0.0
+    budget_remaining: float = 100.0
     bids_placed: int = 0
     auctions_won: int = 0
     win_rate_pct: float = 0.0
+    avg_bid: float = 0.0
     total_revenue: float = 0.0
     total_cost: float = 0.0
     cumulative_profit: float = 0.0
     sla_violations: int = 0
-    efficiency_score: float = 0.0  # profit per auction won
+    efficiency_score: float = 0.0
+    efficiency_pct: float = 85.0
     green_rating: float = 0.0

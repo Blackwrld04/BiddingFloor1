@@ -54,11 +54,13 @@ async def simulation_loop():
                     util = market.get_node_utilization(comp.node_id)
                     bid = comp.calculate_bid(auction.task, util)
                     if bid is not None:
-                        market.submit_bid(BidSubmission(
+                        sub = BidSubmission(
                             node_id=comp.node_id,
                             auction_id=auction.auction_id,
                             bid_price=bid
-                        ))
+                        )
+                        market.submit_bid(sub)
+                        await broadcast_event("BID_RECEIVED", sub.model_dump())
 
                 # 3. Wait for bids window
                 duration = max(0.5, market.round_interval_sec / market.simulation_speed)
@@ -67,6 +69,8 @@ async def simulation_loop():
                 # 4. Clear auction and announce outcome
                 outcome = market.clear_active_auction()
                 if outcome:
+                    for comp in competitors:
+                        comp.record_outcome(outcome.clearing_price, outcome.winner_node_id == comp.node_id, outcome.bids)
                     await broadcast_event("AUCTION_CLEARED", {
                         "outcome": outcome.model_dump(),
                         "leaderboard": [lb.model_dump() for lb in market.get_leaderboard()],

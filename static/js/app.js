@@ -3,11 +3,15 @@
 let profitChart = null;
 let ws = null;
 let roundsData = [];
+let countdownTimerInterval = null;
+
 const botColors = {
-    "edge_agent_smart_04": { border: "#18191C", bg: "#18191C", name: "CognitiveSwarmBot" },
-    "node_random_01": { border: "#9CA3AF", bg: "#9CA3AF", name: "RandomBot" },
-    "node_greedy_02": { border: "#EF4444", bg: "#EF4444", name: "GreedyBot" },
-    "node_static_03": { border: "#8B5CF6", bg: "#8B5CF6", name: "StaticBot" }
+    "edge_agent_smart_04": { border: "#18191C", bg: "#18191C", name: "CognitiveSwarmBot", strategy: "Cognitive Swarm", badgeClass: "smart" },
+    "node_nash_01": { border: "#2563EB", bg: "#2563EB", name: "NashBot", strategy: "Nash Equilibrium", badgeClass: "nash" },
+    "node_dominant_02": { border: "#059669", bg: "#059669", name: "DominantBot", strategy: "Dominant Strategy", badgeClass: "dominant" },
+    "node_bayesian_03": { border: "#7C3AED", bg: "#7C3AED", name: "BayesianBot", strategy: "Bayesian Updating", badgeClass: "bayes" },
+    "node_aggro_04": { border: "#DC2626", bg: "#DC2626", name: "AggroBot", strategy: "Aggressive Bluff", badgeClass: "aggro" },
+    "node_frugal_05": { border: "#D97706", bg: "#D97706", name: "FrugalBot", strategy: "Frugal Sniper", badgeClass: "frugal" }
 };
 
 // Initialize Chart.js matching Reference Mockup Aesthetics
@@ -168,11 +172,33 @@ function handleWsMessage(msg) {
     }
 }
 
+function startAuctionCountdown(durationSec) {
+    if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+    let remaining = Math.max(0.8, durationSec || 2.5);
+    const timerEl = document.getElementById('auctionTimer');
+    if (!timerEl) return;
+
+    timerEl.textContent = `00:0${Math.ceil(remaining)}`;
+    countdownTimerInterval = setInterval(() => {
+        remaining -= 0.1;
+        if (remaining <= 0) {
+            timerEl.textContent = "00:00";
+            clearInterval(countdownTimerInterval);
+        } else {
+            const s = Math.ceil(remaining);
+            timerEl.textContent = `00:0${s}`;
+        }
+    }, 100);
+}
+
 function renderActiveAuction(auction) {
     document.getElementById('kpiRound').textContent = `Round #${auction.round_number}`;
     document.getElementById('kpiTaskType').textContent = auction.task.task_type;
     document.getElementById('auctionStatusBadge').textContent = 'AUCTION OPEN';
     document.getElementById('auctionStatusBadge').style.borderColor = 'var(--cyan)';
+
+    // Start live countdown timer
+    startAuctionCountdown(auction.duration_sec || 2.5);
 
     // Update Task Spec Box
     const task = auction.task;
@@ -182,6 +208,31 @@ function renderActiveAuction(auction) {
     document.getElementById('taskCost').textContent = `€${task.base_cost.toFixed(2)}`;
     document.getElementById('taskBudget').textContent = `€${task.max_budget.toFixed(2)}`;
     document.getElementById('taskDeadline').textContent = `${task.deadline_sec.toFixed(1)}s`;
+
+    // Update Game Theory Signals Widget
+    if (auction.game_theory_signals) {
+        const sigs = auction.game_theory_signals;
+        if (document.getElementById('sigNashBid')) {
+            document.getElementById('sigNashBid').textContent = `€${sigs.nash_eq_bid.toFixed(2)}`;
+        }
+        if (document.getElementById('sigDominantBid')) {
+            document.getElementById('sigDominantBid').textContent = `€${sigs.dominant_bid.toFixed(2)}`;
+        }
+        if (document.getElementById('sigExpectedWinner')) {
+            document.getElementById('sigExpectedWinner').textContent = sigs.expected_winner || 'CognitiveSwarmBot';
+        }
+        const bluffEl = document.getElementById('sigBluffAlert');
+        const bluffText = document.getElementById('sigBluffText');
+        if (bluffEl && bluffText) {
+            if (sigs.bluff_detected) {
+                bluffEl.className = 'bluff-alert-bar';
+                bluffText.textContent = `⚠️ Bluff Alert: ${sigs.bluff_detected}`;
+            } else {
+                bluffEl.className = 'bluff-alert-bar clean';
+                bluffText.textContent = '🛡️ Rational Arena: No Overbid Bluff Detected';
+            }
+        }
+    }
 
     // Clear bids visual floor for new round
     const bidsList = document.getElementById('bidsVisualList');
@@ -193,7 +244,7 @@ function renderIncomingBid(bid) {
     const existing = bidsList.querySelector(`[data-node="${bid.node_id}"]`);
     if (existing) return;
 
-    const botConf = botColors[bid.node_id] || { name: bid.node_id, border: '#FFF' };
+    const botConf = botColors[bid.node_id] || { name: bid.node_id, border: '#18191C', strategy: 'Adaptive', badgeClass: 'smart' };
     const item = document.createElement('div');
     item.className = 'bid-item';
     item.dataset.node = bid.node_id;
@@ -201,6 +252,7 @@ function renderIncomingBid(bid) {
         <span class="bid-bot-name">
             <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${botConf.border};"></span>
             ${botConf.name}
+            <span class="strategy-badge ${botConf.badgeClass}">${botConf.strategy}</span>
         </span>
         <span class="bid-price-tag" style="color: ${botConf.border}">€${bid.bid_price.toFixed(3)}</span>
     `;
@@ -378,16 +430,40 @@ function renderLeaderboard(leaderboard) {
         const tr = document.createElement('tr');
         const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
         const isChampion = row.node_id.includes('smart');
+        const botConf = botColors[row.node_id] || { border: '#18191C', badgeClass: 'smart', strategy: row.strategy || 'Adaptive' };
+        const stratName = row.strategy || botConf.strategy;
+        const badgeClass = botConf.badgeClass;
+
+        const effPct = Math.round(row.efficiency_pct || 85);
+        const effColor = effPct >= 80 ? 'green' : effPct >= 65 ? 'gold' : 'red';
+        const spent = row.budget_spent !== undefined ? row.budget_spent : (row.total_cost || 0);
+        const total = row.budget_total || 100.0;
+        const avgBid = row.avg_bid !== undefined ? `€${row.avg_bid.toFixed(2)}` : '€--';
 
         tr.innerHTML = `
             <td class="rank-cell ${rankClass}">#${idx + 1}</td>
             <td class="agent-name-cell ${isChampion ? 'champion' : ''}">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${botConf.border};"></span>
                 ${row.name}
+                ${isChampion ? '<span style="font-size:10px; background:#18191C; color:#FFF; padding:2px 6px; border-radius:9999px;">👑 Pro</span>' : ''}
             </td>
-            <td>${row.auctions_won} / ${row.bids_placed}</td>
-            <td>${row.win_rate_pct}%</td>
-            <td style="font-family: var(--font-mono); font-weight: 700; color: ${row.cumulative_profit >= 0 ? 'var(--emerald)' : 'var(--rose)'}">
-                €${row.cumulative_profit.toFixed(2)}
+            <td>
+                <span class="strategy-badge ${badgeClass}">${stratName}</span>
+            </td>
+            <td class="budget-text">
+                €${spent.toFixed(1)} / €${total.toFixed(0)}
+            </td>
+            <td>${row.auctions_won} / ${row.bids_placed} (${row.win_rate_pct}%)</td>
+            <td style="font-family: var(--font-mono); font-weight: 600;">
+                ${avgBid}
+            </td>
+            <td>
+                <div class="efficiency-meter-container">
+                    <span style="font-family:var(--font-mono); font-weight:700; font-size:11px;">${effPct}%</span>
+                    <div class="efficiency-bar-bg">
+                        <div class="efficiency-bar-fill ${effColor}" style="width: ${effPct}%"></div>
+                    </div>
+                </div>
             </td>
             <td>
                 <span class="sla-badge ${row.sla_violations === 0 ? 'clean' : 'warning'}">

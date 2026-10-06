@@ -758,6 +758,128 @@ body {
     overflow-y: auto;
 }
 
+/* Game Theory Signals Widget */
+.game-theory-signals-box {
+    background: #F8FAFC;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.signals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.signal-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.signal-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.signal-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+.bluff-alert-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FEF3C7;
+    color: #B45309;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.bluff-alert-bar.clean {
+    background: #ECFDF5;
+    color: #065F46;
+}
+
+/* Timer Pill */
+.timer-pill {
+    background: #F3F4F6;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Strategy Badges */
+.strategy-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 10px;
+    font-weight: 600;
+    background: #F3F4F6;
+    color: var(--text-secondary);
+}
+
+.strategy-badge.nash { background: #DBEAFE; color: #1E40AF; }
+.strategy-badge.bayes { background: #EDE9FE; color: #6D28D9; }
+.strategy-badge.dominant { background: #D1FAE5; color: #065F46; }
+.strategy-badge.aggro { background: #FEE2E2; color: #991B1B; }
+.strategy-badge.frugal { background: #FEF3C7; color: #92400E; }
+.strategy-badge.smart { background: #18191C; color: #FFFFFF; }
+
+/* Efficiency Meter */
+.efficiency-meter-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.efficiency-bar-bg {
+    width: 60px;
+    height: 6px;
+    background: #E5E7EB;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.efficiency-bar-fill {
+    height: 100%;
+    background: #18191C;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+.efficiency-bar-fill.gold { background: var(--accent-gold); }
+.efficiency-bar-fill.green { background: var(--accent-green); }
+.efficiency-bar-fill.red { background: var(--accent-rose); }
+
+/* Budget Bar */
+.budget-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
 .bid-item {
     display: flex;
     justify-content: space-between;
@@ -1309,7 +1431,13 @@ body {
                 <div class="card">
                     <div class="card-header">
                         <h2>⚡ Task Spec & Bidding Floor</h2>
-                        <span class="metric-badge cyan">Vickrey 2nd-Price</span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <div class="timer-pill" id="auctionTimerPill">
+                                <span>⏱️</span>
+                                <span id="auctionTimer">00:03</span>s
+                            </div>
+                            <span class="metric-badge cyan">Vickrey 2nd-Price</span>
+                        </div>
                     </div>
 
                     <div class="task-spec-box" id="taskSpecDetails">
@@ -1336,6 +1464,28 @@ body {
                         <div class="spec-cell">
                             <span class="spec-cell-label">Deadline</span>
                             <span class="spec-cell-val" id="taskDeadline">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Game Theory Signals & Mechanism Prediction -->
+                    <div class="game-theory-signals-box">
+                        <div class="signals-grid">
+                            <div class="signal-item">
+                                <span class="signal-label">Nash Eq. Bid</span>
+                                <span class="signal-val" id="sigNashBid">€--.--</span>
+                            </div>
+                            <div class="signal-item">
+                                <span class="signal-label">Dominant Bid</span>
+                                <span class="signal-val" id="sigDominantBid">€--.--</span>
+                            </div>
+                            <div class="signal-item">
+                                <span class="signal-label">Expected Winner</span>
+                                <span class="signal-val" id="sigExpectedWinner" style="color: #059669;">CognitiveSwarmBot</span>
+                            </div>
+                        </div>
+                        <div class="bluff-alert-bar clean" id="sigBluffAlert">
+                            <span>🛡️</span>
+                            <span id="sigBluffText">Rational Arena: No Overbid Bluff Detected</span>
                         </div>
                     </div>
 
@@ -1376,7 +1526,7 @@ body {
             <section class="card" id="topology">
                 <div class="card-header">
                     <h2>🌐 Edge Cluster Topology & Core Allocation Matrix</h2>
-                    <span class="metric-badge green">4 Heterogeneous Nodes</span>
+                    <span class="metric-badge green" id="clusterNodeCountBadge">6 Heterogeneous Nodes</span>
                 </div>
                 <div class="topology-grid" id="topologyGrid">
                     <!-- Populated dynamically by app.js -->
@@ -1399,9 +1549,11 @@ body {
                             <tr>
                                 <th>Rank</th>
                                 <th>Agent / Edge Node</th>
-                                <th>Bids (Won / Total)</th>
-                                <th>Win Rate</th>
-                                <th>Cumulative Profit</th>
+                                <th>Game Theory Strategy</th>
+                                <th>Budget (Spent / Total)</th>
+                                <th>Wins / Bids</th>
+                                <th>Avg Bid</th>
+                                <th>Efficiency Rating</th>
                                 <th>Status</th>
                             </tr>
                         </thead>

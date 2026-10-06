@@ -113,6 +113,20 @@ class MarketEngine:
     def create_auction_round(self) -> AuctionRound:
         self.clean_expired_workloads()
         task = self.generate_task()
+        
+        # Calculate real-time Game Theory Signals
+        n_bidders = max(2, len(self.nodes) or 5)
+        nash_bid = round(task.base_cost + (((n_bidders - 1) / n_bidders) * (task.max_budget - task.base_cost) * 0.40), 3)
+        dominant_bid = round(task.base_cost * 1.15, 3)
+        
+        signals = {
+            "nash_eq_bid": nash_bid,
+            "dominant_bid": dominant_bid,
+            "expected_winner": "CognitiveSwarmBot (Green Moat)",
+            "mechanism": "Vickrey Second-Price",
+            "bluff_detected": None
+        }
+
         self.active_auction = AuctionRound(
             auction_id=f"auc-{self.round_counter:04d}",
             round_number=self.round_counter,
@@ -121,7 +135,8 @@ class MarketEngine:
             created_at=time.time(),
             duration_sec=self.round_interval_sec * 0.8,
             status="OPEN",
-            bids={}
+            bids={},
+            game_theory_signals=signals
         )
         self.active_submissions: Dict[str, BidSubmission] = {}
         return self.active_auction
@@ -243,6 +258,16 @@ class MarketEngine:
         deliberation_steps = winner_sub.deliberation_steps if winner_sub else None
         sponsor_telemetry = winner_sub.sponsor_telemetry if winner_sub else None
 
+        # Check for aggressive bluff / overbid detection
+        signals = dict(auc.game_theory_signals or {})
+        for nid, b_val in auc.bids.items():
+            if b_val > task.base_cost * 1.35:
+                bot_name = self.nodes[nid].name if nid in self.nodes else nid
+                over_pct = int(((b_val / task.base_cost) - 1.0) * 100)
+                signals["bluff_detected"] = f"{bot_name.split(' ')[0]} (+{over_pct}% over valuation)"
+                break
+        signals["clearing_analysis"] = f"Winner paid 2nd-price: €{clearing_price:.3f} (Saves buyer €{(task.max_budget - clearing_price):.2f})"
+
         outcome = BidOutcome(
             auction_id=auc.auction_id,
             round_number=auc.round_number,
@@ -257,7 +282,8 @@ class MarketEngine:
             timestamp=now,
             winner_trace=winner_trace,
             deliberation_steps=deliberation_steps,
-            sponsor_telemetry=sponsor_telemetry
+            sponsor_telemetry=sponsor_telemetry,
+            game_theory_signals=signals
         )
         self.history.append(outcome)
         return outcome
@@ -293,19 +319,36 @@ class MarketEngine:
 
         leaderboard = []
         for s in stats.values():
+            node = self.nodes.get(s["node_id"])
+            strategy = getattr(node, "strategy", "Adaptive")
+            budget_total = getattr(node, "budget_total", 100.0)
+            budget_spent = round(s["total_cost"], 2)
+            budget_remaining = round(max(0.0, budget_total - budget_spent), 2)
+
+            bids_sum = sum(out.bids.get(s["node_id"], 0.0) for out in self.history if s["node_id"] in out.bids)
+            avg_bid = round(bids_sum / max(1, s["bids_placed"]), 3)
+
             win_rate = (s["auctions_won"] / max(1, s["bids_placed"])) * 100.0
             efficiency = s["cumulative_profit"] / max(1, s["auctions_won"])
+            efficiency_pct = min(98.0, max(42.0, round(55.0 + (s["cumulative_profit"] * 2.2) - (s["sla_violations"] * 15.0), 1)))
+
             leaderboard.append(LeaderboardEntry(
                 node_id=s["node_id"],
                 name=s["name"],
+                strategy=strategy,
+                budget_total=budget_total,
+                budget_spent=budget_spent,
+                budget_remaining=budget_remaining,
                 bids_placed=s["bids_placed"],
                 auctions_won=s["auctions_won"],
                 win_rate_pct=round(win_rate, 1),
+                avg_bid=avg_bid,
                 total_revenue=round(s["total_revenue"], 3),
                 total_cost=round(s["total_cost"], 3),
                 cumulative_profit=round(s["cumulative_profit"], 3),
                 sla_violations=s["sla_violations"],
                 efficiency_score=round(efficiency, 3),
+                efficiency_pct=efficiency_pct,
                 green_rating=s["green_rating"]
             ))
 
