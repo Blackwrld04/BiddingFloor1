@@ -4,28 +4,28 @@ let profitChart = null;
 let ws = null;
 let roundsData = [];
 const botColors = {
-    "edge_agent_smart_04": { border: "#18191C", bg: "rgba(24, 25, 28, 0.06)", name: "CognitiveSwarmBot (Champion)" },
-    "node_random_01": { border: "#F59E0B", bg: "rgba(245, 158, 11, 0.05)", name: "RandomBot" },
-    "node_greedy_02": { border: "#EF4444", bg: "rgba(239, 68, 68, 0.05)", name: "GreedyBot" },
-    "node_static_03": { border: "#8B5CF6", bg: "rgba(139, 92, 246, 0.05)", name: "StaticBot" }
+    "edge_agent_smart_04": { border: "#18191C", bg: "#18191C", name: "CognitiveSwarmBot" },
+    "node_random_01": { border: "#9CA3AF", bg: "#9CA3AF", name: "RandomBot" },
+    "node_greedy_02": { border: "#EF4444", bg: "#EF4444", name: "GreedyBot" },
+    "node_static_03": { border: "#8B5CF6", bg: "#8B5CF6", name: "StaticBot" }
 };
 
-// Initialize Chart.js
+// Initialize Chart.js matching Reference Mockup Aesthetics
 function initChart() {
     const ctx = document.getElementById('profitChart').getContext('2d');
     profitChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: [],
             datasets: Object.keys(botColors).map(botId => ({
                 label: botColors[botId].name,
                 data: [],
-                borderColor: botColors[botId].border,
                 backgroundColor: botColors[botId].bg,
-                borderWidth: botId.includes("smart") ? 3 : 2,
-                pointRadius: botId.includes("smart") ? 4 : 2,
-                tension: 0.35,
-                fill: botId.includes("smart")
+                borderColor: botColors[botId].border,
+                borderRadius: 8,
+                borderSkipped: false,
+                barPercentage: 0.65,
+                categoryPercentage: 0.75
             }))
         },
         options: {
@@ -38,8 +38,6 @@ function initChart() {
                     labels: { color: '#4B5563', font: { family: 'Outfit', size: 11, weight: '600' } }
                 },
                 tooltip: {
-                    mode: 'index',
-                    intersect: false,
                     backgroundColor: '#18191C',
                     titleColor: '#FFFFFF',
                     bodyColor: '#E5E7EB',
@@ -51,19 +49,45 @@ function initChart() {
             },
             scales: {
                 x: {
-                    grid: { color: 'rgba(0, 0, 0, 0.04)' },
-                    ticks: { color: '#9CA3AF', font: { family: 'JetBrains Mono', size: 10 } }
+                    grid: { display: false },
+                    ticks: { color: '#8E929B', font: { family: 'Outfit', size: 11, weight: '600' } }
                 },
                 y: {
                     grid: { color: 'rgba(0, 0, 0, 0.04)' },
                     ticks: {
-                        color: '#9CA3AF',
-                        font: { family: 'JetBrains Mono', size: 10 },
-                        callback: val => '€' + val.toFixed(1)
+                        color: '#8E929B',
+                        font: { family: 'Outfit', size: 11 },
+                        callback: val => '€' + Number(val).toFixed(1)
                     }
                 }
             }
         }
+    });
+
+    // Chart mode switcher listeners
+    document.getElementById('btnChartBars')?.addEventListener('click', (e) => {
+        document.getElementById('btnChartBars')?.classList.add('active');
+        document.getElementById('btnChartLines')?.classList.remove('active');
+        profitChart.config.type = 'bar';
+        profitChart.data.datasets.forEach(ds => {
+            ds.borderRadius = 8;
+            ds.tension = 0;
+            ds.fill = false;
+        });
+        profitChart.update();
+    });
+
+    document.getElementById('btnChartLines')?.addEventListener('click', (e) => {
+        document.getElementById('btnChartLines')?.classList.add('active');
+        document.getElementById('btnChartBars')?.classList.remove('active');
+        profitChart.config.type = 'line';
+        profitChart.data.datasets.forEach(ds => {
+            ds.borderRadius = 0;
+            ds.tension = 0.35;
+            ds.fill = ds.label.includes('Cognitive');
+            ds.backgroundColor = ds.label.includes('Cognitive') ? 'rgba(24, 25, 28, 0.06)' : 'transparent';
+        });
+        profitChart.update();
     });
 }
 
@@ -347,7 +371,7 @@ function renderLeaderboard(leaderboard) {
     if (leaderboard.length > 0) {
         const top = leaderboard[0];
         document.getElementById('kpiLeader').textContent = top.name.split(' ')[0];
-        document.getElementById('kpiLeaderProfit').textContent = `+€${top.cumulative_profit.toFixed(2)} Profit`;
+        document.getElementById('kpiLeaderProfit').textContent = `+€${top.cumulative_profit.toFixed(2)}`;
     }
 
     leaderboard.forEach((row, idx) => {
@@ -367,7 +391,7 @@ function renderLeaderboard(leaderboard) {
             </td>
             <td>
                 <span class="sla-badge ${row.sla_violations === 0 ? 'clean' : 'warning'}">
-                    ${row.sla_violations} Flags
+                    ${row.sla_violations === 0 ? 'NeMo Clean' : row.sla_violations + ' Flags'}
                 </span>
             </td>
         `;
@@ -378,7 +402,7 @@ function renderLeaderboard(leaderboard) {
 function updateChart(roundNumber, leaderboard) {
     if (!profitChart) return;
 
-    if (profitChart.data.labels.length > 25) {
+    if (profitChart.data.labels.length > 8) {
         profitChart.data.labels.shift();
         profitChart.data.datasets.forEach(ds => ds.data.shift());
     }

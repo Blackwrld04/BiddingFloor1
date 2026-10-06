@@ -95,7 +95,7 @@ class MarketEngine:
 
         base_cost = round(t_template["base_cost"] * jitter, 3)
         max_budget = round(base_cost * t_template["budget_mult"], 3)
-        duration = round(t_template["duration"] * jitter, 2)
+        duration = min(10.0, max(0.5, round(t_template["duration"] * jitter, 2)))
         deadline = round(duration * (1.3 if self.showcase_mode else random.uniform(1.2, 1.8)), 2)
 
         return TaskDefinition(
