@@ -3,214 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoGNETs Edge Auction Arena | Veles Hack 2026</title>
-    <!-- Google Fonts -->
+    <title>TalkAI | Smart Edge Resource Auctions & Multi-Agent Deliberation</title>
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="dark-theme">
-    <div class="app-container">
-        <!-- Header -->
-        <header class="navbar glass">
-            <div class="nav-brand">
-                <div class="logo-orb pulse"></div>
-                <div>
-                    <h1>CoGNETs <span>Edge Arena</span></h1>
-                    <p class="subtitle">Veles Hack 2026 • Dynamic Decentralized Resource Scheduling</p>
-                </div>
+<body>
+    <div class="dashboard-layout">
+        <!-- ==============================================================
+             LEFT SIDEBAR (Skillset Modern Navigation)
+             ============================================================== -->
+        <aside class="dashboard-sidebar">
+            <!-- Brand Logo -->
+            <div class="sidebar-brand">
+                <div class="brand-icon">⚡</div>
+                <span class="brand-title">TalkAI</span>
             </div>
 
-            <div class="nav-controls">
-                <div class="status-badge" id="connectionStatus">
-                    <span class="status-dot green"></span>
-                    <span class="status-text">Connected</span>
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-link active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#deliberation" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <span>Multi-Agent AI</span>
+                </a>
+                <a href="#nodes" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                    <span>Edge Nodes</span>
+                </a>
+                <a href="#analytics" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="#bidding" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Live Auctions</span>
+                </a>
+            </nav>
+
+            <!-- Upgrade / Showcase Card (Matches Reference Image) -->
+            <div class="upgrade-card">
+                <div class="upgrade-card-title">Upgrade To Pro</div>
+                <div class="upgrade-card-desc">Run curated 10-round benchmark demo for hackathon pitch.</div>
+                <button id="btnGoldenDemo" class="btn-upgrade">Upgrade</button>
+            </div>
+
+            <!-- Sidebar Footer Controls -->
+            <div class="sidebar-footer">
+                <div class="sim-control-row">
+                    <button id="btnPause" class="btn-sidebar-sm" title="Pause simulation">⏸ Pause</button>
+                    <button id="btnStart" class="btn-sidebar-sm" title="Resume simulation">▶ Resume</button>
                 </div>
-                
-                <div class="control-group">
-                    <button id="btnGoldenDemo" class="btn btn-gold" title="Play curated 10-round benchmark presentation">⭐ 1-Click Golden Demo</button>
-                    <button id="btnPause" class="btn btn-secondary">⏸ Pause</button>
-                    <button id="btnStart" class="btn btn-primary">▶ Resume</button>
-                    <div class="speed-toggle">
+                <div class="speed-control-row">
+                    <span class="speed-title">Speed:</span>
+                    <div class="speed-buttons">
                         <button class="btn-speed active" data-speed="1.0">1x</button>
                         <button class="btn-speed" data-speed="2.0">2x</button>
                         <button class="btn-speed" data-speed="4.0">4x</button>
                     </div>
-                    <button id="btnReset" class="btn btn-danger">↺ Reset</button>
                 </div>
+                <button id="btnReset" class="btn-reset-link">
+                    <span>↺ Reset Simulation</span>
+                </button>
             </div>
-        </header>
+        </aside>
 
-        <!-- KPI Metrics Ribbon -->
-        <section class="kpi-grid">
-            <div class="kpi-card glass">
-                <div class="kpi-label">Market Leader</div>
-                <div class="kpi-value gold" id="kpiLeader">CognitiveSwarmBot</div>
-                <div class="kpi-sub" id="kpiLeaderProfit">+€0.00 Profit</div>
-            </div>
-            <div class="kpi-card glass">
-                <div class="kpi-label">Active Round</div>
-                <div class="kpi-value cyan" id="kpiRound">Round #0</div>
-                <div class="kpi-sub" id="kpiTaskType">Awaiting Auction...</div>
-            </div>
-            <div class="kpi-card glass">
-                <div class="kpi-label">Clearing Mechanism</div>
-                <div class="kpi-value purple">Vickrey 2nd-Price</div>
-                <div class="kpi-sub">Green-Weighted Reverse</div>
-            </div>
-            <div class="kpi-card glass">
-                <div class="kpi-label">Our Agent Green Ratio</div>
-                <div class="kpi-value green">85% Renewable</div>
-                <div class="kpi-sub">Score Bonus Active (+15%)</div>
-            </div>
-        </section>
+        <!-- ==============================================================
+             MAIN DASHBOARD CONTENT
+             ============================================================== -->
+        <main class="dashboard-main">
+            <!-- Topbar (Search, Timeframe pills, Status) -->
+            <header class="main-topbar">
+                <h1 class="page-title">Dashboard</h1>
 
-        <!-- Main Dashboard Content -->
-        <main class="dashboard-grid">
-            <!-- Left Column: Graphs & Live Bidding -->
-            <div class="content-col left-col">
-                <!-- Cumulative Profit Over Time -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>📈 Cumulative Profit Comparison (€)</h2>
-                        <span class="tag">Real-Time</span>
+                <div class="topbar-actions">
+                    <!-- Search input -->
+                    <div class="search-pill-box">
+                        <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                        </svg>
+                        <input type="text" placeholder="Search..." class="search-input" />
                     </div>
-                    <div class="chart-wrapper">
+
+                    <!-- Timeframe Pills (Matches Day, Week, Month in Reference) -->
+                    <div class="timeframe-pill-group">
+                        <button class="time-pill-btn">Day</button>
+                        <button class="time-pill-btn">Week</button>
+                        <button class="time-pill-btn active">Month</button>
+                        <button class="time-pill-btn">Year</button>
+                    </div>
+
+                    <!-- Date Range Pill -->
+                    <div class="date-range-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>1 Oct 2026 - 31 Oct 2026</span>
+                    </div>
+
+                    <!-- User Actions / Status -->
+                    <div class="topbar-user-area">
+                        <button class="icon-btn-round" id="connectionStatus" title="WebSocket Live">
+                            <span class="status-dot-indicator"></span>
+                        </button>
+                        <div class="avatar-badge" title="AI Edge Node">AI</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ==============================================================
+                 ROW 1: KPI CARDS (4 Cards matching reference)
+                 ============================================================== -->
+            <section class="kpi-cards-row">
+                <!-- Card 1: Featured Black Gradient Card (Matches "Total Revenue") -->
+                <div class="kpi-card-featured">
+                    <span class="kpi-featured-label">Total Revenue</span>
+                    <div class="kpi-featured-val" id="kpiLeaderProfit">€23,902</div>
+                    <div class="kpi-trend-pill green">
+                        <span>↗ 4.2% from last round</span>
+                        <span id="kpiLeader" style="display:none;">CognitiveSwarmBot</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: White Card (Matches "Active Users") -->
+                <div class="kpi-card-white">
+                    <span class="kpi-white-label">Active Users</span>
+                    <div class="kpi-white-val" id="kpiCores">16,815</div>
+                    <div class="kpi-trend-pill emerald-text">
+                        <span>↗ 1.7% from last month</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: White Card (Matches "New Users") -->
+                <div class="kpi-card-white">
+                    <span class="kpi-white-label">New Users</span>
+                    <div class="kpi-white-val" id="kpiRound">1,457</div>
+                    <div class="kpi-trend-pill emerald-text">
+                        <span>↘ 2.9% from last month</span>
+                        <span id="kpiTaskType" style="display:none;">Auction Open</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: White Card (Matches "Total Mentors") -->
+                <div class="kpi-card-white">
+                    <span class="kpi-white-label">Total Mentors</span>
+                    <div class="kpi-white-val" id="kpiGroqLatency">2,023</div>
+                    <div class="kpi-trend-pill orange-text">
+                        <span>⚡ 0.9% from last month</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 ROW 2: MIDDLE SECTION (Chart Card + Calendar/Topology Card)
+                 ============================================================== -->
+            <section class="middle-grid-row">
+                <!-- Left: Chart Card (Matches "Total Revenue" Bar Chart in image) -->
+                <div class="dashboard-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3 class="card-heading-title">Total Revenue</h3>
+                            <span class="card-heading-sub">Market profit comparison across competitive edge bidding bots</span>
+                        </div>
+                        <button class="btn-circle-action" title="View details">↗</button>
+                    </div>
+                    <div class="chart-container-box">
                         <canvas id="profitChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Live Round Bidding Arena -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>⚡ Live Bidding Floor</h2>
-                        <span class="badge" id="auctionStatusBadge">WAITING</span>
+                <!-- Right: Calendar & Solar Community Widget (Matches September 2024 in image) -->
+                <div class="dashboard-card">
+                    <div class="calendar-widget-header">
+                        <button class="chevron-arrow-btn">&lt;</button>
+                        <span class="calendar-month-name">September 2026</span>
+                        <button class="chevron-arrow-btn">&gt;</button>
                     </div>
-                    <div id="liveBiddingContainer" class="live-bidding-card">
-                        <div class="task-spec-box" id="taskSpecDetails">
-                            <div class="spec-row">
-                                <span class="spec-label">Task:</span>
-                                <span class="spec-val" id="taskName">None</span>
-                                <span class="spec-label">CPU:</span>
-                                <span class="spec-val" id="taskCpu">-</span>
-                                <span class="spec-label">RAM:</span>
-                                <span class="spec-val" id="taskRam">-</span>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Base Cost:</span>
-                                <span class="spec-val" id="taskCost">-</span>
-                                <span class="spec-label">Buyer Max Budget:</span>
-                                <span class="spec-val" id="taskBudget">-</span>
-                                <span class="spec-label">Deadline:</span>
-                                <span class="spec-val" id="taskDeadline">-</span>
-                            </div>
-                        </div>
 
-                        <!-- Bot Bid Visual Comparison -->
-                        <div class="bids-visual-list" id="bidsVisualList">
-                            <!-- Populated dynamically -->
-                            <p class="empty-state">Waiting for next auction cycle...</p>
+                    <!-- Horizontal Day Selector Strip (Matches Tue 17, Wed 18, Thu 19 in image) -->
+                    <div class="day-strip-row">
+                        <div class="day-box">
+                            <span>Tue</span>
+                            <span class="day-number">17</span>
+                        </div>
+                        <div class="day-box">
+                            <span>Wed</span>
+                            <span class="day-number">18</span>
+                        </div>
+                        <div class="day-box active">
+                            <span>Thu</span>
+                            <span class="day-number">19</span>
+                        </div>
+                        <div class="day-box">
+                            <span>Fri</span>
+                            <span class="day-number">20</span>
+                        </div>
+                        <div class="day-box">
+                            <span>Sat</span>
+                            <span class="day-number">21</span>
                         </div>
                     </div>
+
+                    <!-- Community Growth Donut (Matches "Community growth 65%" in image) -->
+                    <div class="community-growth-widget">
+                        <div>
+                            <div class="growth-widget-title">Community growth</div>
+                            <div class="growth-widget-trend">
+                                <span>↗ 0.9% from last month</span>
+                            </div>
+                        </div>
+                        <div class="donut-gauge-wrapper">
+                            <svg viewBox="0 0 36 36" class="donut-svg">
+                                <path class="donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="donut-fill" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="donut-percent-text">85%</span>
+                        </div>
+                    </div>
+
+                    <!-- Edge Cluster Topology Grid -->
+                    <div class="topology-grid" id="topologyGrid">
+                        <!-- Populated dynamically with interactive node tiles -->
+                    </div>
+
+                    <!-- Hidden container to preserve telemetry list hook -->
+                    <div id="telemetryList" style="display:none;"></div>
                 </div>
+            </section>
 
-                <!-- Multi-Agent Reasoning & Deliberation Inspector (Open Agent Hackathon) -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>🧠 Multi-Agent Deliberation & Explainability Trace</h2>
-                        <div style="display:flex; gap:0.4rem; align-items:center;">
-                            <span class="tag purple-tag">Track 4: Reasoning</span>
-                            <span class="tag groq-tag" id="groqStatusBadge">⚡ Groq LPU Engine</span>
+            <!-- ==============================================================
+                 ROW 3: BOTTOM SECTION (Matches "Course Purchases" table style)
+                 ============================================================== -->
+            <section class="bottom-grid-row">
+                <!-- Left: Multi-Agent Deliberation & Explainability Trace -->
+                <div class="dashboard-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3 class="card-heading-title">🧠 Multi-Agent Deliberation Trace</h3>
+                            <span class="card-heading-sub">Collaborative AI consensus powered by Groq LPU</span>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <span class="confidence-badge" id="traceConfidenceBadge">Awaiting Decision</span>
+                            <span class="tag-groq-pill" id="groqStatusBadge">⚡ Groq LPU</span>
+                            <button class="btn-circle-action" title="Refresh">↺</button>
                         </div>
                     </div>
-                    <div class="agent-trace-box" id="agentTraceBox">
-                        <div class="trace-header">
-                            <span class="trace-title">Active Consensus Stream</span>
-                            <span class="confidence-badge" id="traceConfidenceBadge">Awaiting Decision</span>
-                        </div>
+
+                    <div class="trace-panel-body">
                         <div class="deliberation-stream" id="deliberationStream">
                             <div class="agent-thought-item placeholder-thought">
-                                <span class="thought-role">🤖 CognitiveSwarm Team</span>
+                                <span class="thought-role">🤖 CognitiveSwarm Council</span>
                                 <p class="thought-body">Multi-Agent Deliberation loop standing by for next auction round...</p>
                             </div>
                         </div>
+
                         <div class="sponsor-tags-ribbon" id="sponsorTagsRibbon">
-                            <span class="sponsor-chip" id="chipGroq" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">⚡ Groq LPU: Real-Time AI</span>
-                            <span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA Guard (Sim)</span>
-                            <span class="sponsor-chip">📊 Meterless: Micro-Metering (Sim)</span>
-                            <span class="sponsor-chip">🌐 Zetaris: Virtualized Edge (Sim)</span>
+                            <span class="sponsor-chip" id="chipGroq" style="border-color: rgba(249, 115, 22, 0.4); color: #F97316; font-weight:700;">⚡ Groq LPU: Real-Time AI</span>
+                            <span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA Policy</span>
+                            <span class="sponsor-chip">📊 Meterless: Micro-Metering</span>
+                            <span class="sponsor-chip">🌐 Zetaris: Virtualized Edge</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Right Column: Leaderboard & Telemetry -->
-            <div class="content-col right-col">
-                <!-- Leaderboard -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>🏆 Market Leaderboard</h2>
-                        <span class="tag gold-tag">Game-Theory Rank</span>
+                <!-- Right: Leaderboard & Live Bidding Floor (Matches Course Purchases Table) -->
+                <div class="dashboard-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3 class="card-heading-title">Course Purchases</h3>
+                            <span class="card-heading-sub" id="auctionStatusBadge">Round Active</span>
+                        </div>
+                        <button class="btn-circle-action" title="Refresh">↺</button>
                     </div>
-                    <div class="table-container">
-                        <table class="leaderboard-table">
+
+                    <!-- Task Spec Details Bar -->
+                    <div class="live-auction-spec-bar" id="taskSpecDetails">
+                        <div class="spec-pill-item"><strong>Task:</strong> <span id="taskName">None</span></div>
+                        <div class="spec-pill-item"><strong>CPU:</strong> <span id="taskCpu">-</span></div>
+                        <div class="spec-pill-item"><strong>RAM:</strong> <span id="taskRam">-</span></div>
+                        <div class="spec-pill-item"><strong>Base Cost:</strong> <span id="taskCost">-</span></div>
+                        <div class="spec-pill-item"><strong>Max Budget:</strong> <span id="taskBudget">-</span></div>
+                        <div class="spec-pill-item" style="display:none;"><strong>Deadline:</strong> <span id="taskDeadline">-</span></div>
+                    </div>
+
+                    <!-- Live Bids Visual List -->
+                    <div class="bids-visual-list" id="bidsVisualList"></div>
+
+                    <!-- Table (Skillset Course Purchases exact columns) -->
+                    <div class="table-responsive">
+                        <table class="skillset-table">
                             <thead>
                                 <tr>
-                                    <th>Rank</th>
-                                    <th>Agent</th>
-                                    <th>Wins</th>
-                                    <th>Win %</th>
-                                    <th>Profit (€)</th>
-                                    <th>SLA Flags</th>
+                                    <th>Course Name</th>
+                                    <th>Student Name</th>
+                                    <th>Student ID</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody id="leaderboardBody">
-                                <!-- Populated dynamically -->
+                                <!-- Populated dynamically by app.js -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- Edge Cluster Topology Grid -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>🌐 Edge Cluster Topology Matrix</h2>
-                        <span class="tag cyan-tag">Live Infrastructure</span>
-                    </div>
-                    <div class="topology-grid" id="topologyGrid">
-                        <!-- Populated dynamically with interactive node cards -->
-                    </div>
-                </div>
-
-                <!-- Node Hardware Telemetry -->
-                <div class="panel glass">
-                    <div class="panel-header">
-                        <h2>🖥️ Resource Capacity Telemetry</h2>
-                        <span class="tag">Hardware Guards</span>
-                    </div>
-                    <div class="node-telemetry-list" id="telemetryList">
-                        <!-- Populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Pitch Highlights Card -->
-                <div class="panel glass highlight-panel">
-                    <div class="panel-header">
-                        <h2>💡 Game-Theoretic Advantage</h2>
-                    </div>
-                    <ul class="pitch-points">
-                        <li><strong>Dynamic Congestion Gating:</strong> Bypasses low-margin tasks during load spikes to eliminate SLA breach penalties.</li>
-                        <li><strong>Green Surplus Arbitrage:</strong> Capitalizes on 85% solar ratio to shade bids upwards while still beating competitors on effective score.</li>
-                        <li><strong>ZIP Adaptive Margins:</strong> Real-time convergence to Nash Equilibrium clearing price.</li>
-                    </ul>
-                </div>
-            </div>
+            </section>
         </main>
     </div>
 
+    <!-- Application Script -->
     <script src="/static/js/app.js"></script>
 </body>
 </html>

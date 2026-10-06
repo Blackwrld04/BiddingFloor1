@@ -4,10 +4,10 @@ let profitChart = null;
 let ws = null;
 let roundsData = [];
 const botColors = {
-    "edge_agent_smart_04": { border: "#06B6D4", bg: "rgba(6, 182, 212, 0.15)", name: "CognitiveSwarmBot (Champion)" },
-    "node_random_01": { border: "#F59E0B", bg: "rgba(245, 158, 11, 0.1)", name: "RandomBot" },
-    "node_greedy_02": { border: "#F43F5E", bg: "rgba(244, 63, 94, 0.1)", name: "GreedyBot" },
-    "node_static_03": { border: "#A855F7", bg: "rgba(168, 85, 247, 0.1)", name: "StaticBot" }
+    "edge_agent_smart_04": { border: "#18181B", bg: "rgba(24, 24, 27, 0.08)", name: "CognitiveSwarmBot" },
+    "node_random_01": { border: "#F59E0B", bg: "rgba(245, 158, 11, 0.08)", name: "RandomBot" },
+    "node_greedy_02": { border: "#EF4444", bg: "rgba(239, 68, 68, 0.08)", name: "GreedyBot" },
+    "node_static_03": { border: "#8B5CF6", bg: "rgba(139, 92, 246, 0.08)", name: "StaticBot" }
 };
 
 // Initialize Chart.js
@@ -22,38 +22,48 @@ function initChart() {
                 data: [],
                 borderColor: botColors[botId].border,
                 backgroundColor: botColors[botId].bg,
-                borderWidth: botId.includes("smart") ? 3 : 2,
-                pointRadius: botId.includes("smart") ? 4 : 2,
-                tension: 0.3,
+                borderWidth: botId.includes("smart") ? 2.8 : 1.8,
+                pointRadius: botId.includes("smart") ? 3.5 : 1.5,
+                tension: 0.35,
                 fill: botId.includes("smart")
             }))
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 400 },
+            animation: { duration: 350 },
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { color: '#94A3B8', font: { family: 'Outfit', size: 11 } }
+                    align: 'end',
+                    labels: {
+                        color: '#4B5563',
+                        font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' },
+                        boxWidth: 8,
+                        usePointStyle: true
+                    }
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                    titleFont: { family: 'Outfit', size: 12 },
-                    bodyFont: { family: 'JetBrains Mono', size: 11 }
+                    backgroundColor: '#18181B',
+                    titleColor: '#FFFFFF',
+                    bodyColor: '#E5E7EB',
+                    titleFont: { family: 'Plus Jakarta Sans', size: 12 },
+                    bodyFont: { family: 'JetBrains Mono', size: 11 },
+                    padding: 10,
+                    cornerRadius: 8
                 }
             },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 10 } }
+                    grid: { color: 'rgba(0, 0, 0, 0.03)' },
+                    ticks: { color: '#9CA3AF', font: { family: 'JetBrains Mono', size: 10 } }
                 },
                 y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    grid: { color: 'rgba(0, 0, 0, 0.03)' },
                     ticks: {
-                        color: '#64748B',
+                        color: '#9CA3AF',
                         font: { family: 'JetBrains Mono', size: 10 },
                         callback: val => '€' + val.toFixed(1)
                     }
@@ -141,40 +151,51 @@ function handleWsMessage(msg) {
 }
 
 function renderActiveAuction(auction) {
-    document.getElementById('kpiRound').textContent = `Round #${auction.round_number}`;
-    document.getElementById('kpiTaskType').textContent = auction.task.task_type;
-    document.getElementById('auctionStatusBadge').textContent = 'AUCTION OPEN';
-    document.getElementById('auctionStatusBadge').style.borderColor = 'var(--cyan)';
+    const kpiRound = document.getElementById('kpiRound');
+    if (kpiRound) kpiRound.textContent = `Round #${auction.round_number}`;
+    
+    const kpiTask = document.getElementById('kpiTaskType');
+    if (kpiTask) kpiTask.textContent = auction.task.task_type;
+
+    const badge = document.getElementById('auctionStatusBadge');
+    if (badge) badge.textContent = `Round #${auction.round_number} Active`;
 
     // Update Task Spec Box
     const task = auction.task;
-    document.getElementById('taskName').textContent = task.task_type;
-    document.getElementById('taskCpu').textContent = `${task.required_cpu} Cores`;
-    document.getElementById('taskRam').textContent = `${task.required_ram_mb} MB`;
-    document.getElementById('taskCost').textContent = `€${task.base_cost.toFixed(2)}`;
-    document.getElementById('taskBudget').textContent = `€${task.max_budget.toFixed(2)}`;
-    document.getElementById('taskDeadline').textContent = `${task.deadline_sec.toFixed(1)}s`;
+    const taskName = document.getElementById('taskName');
+    if (taskName) taskName.textContent = task.task_type;
+    const taskCpu = document.getElementById('taskCpu');
+    if (taskCpu) taskCpu.textContent = `${task.required_cpu}c`;
+    const taskRam = document.getElementById('taskRam');
+    if (taskRam) taskRam.textContent = `${task.required_ram_mb}MB`;
+    const taskCost = document.getElementById('taskCost');
+    if (taskCost) taskCost.textContent = `€${task.base_cost.toFixed(2)}`;
+    const taskBudget = document.getElementById('taskBudget');
+    if (taskBudget) taskBudget.textContent = `€${task.max_budget.toFixed(2)}`;
+    const taskDeadline = document.getElementById('taskDeadline');
+    if (taskDeadline) taskDeadline.textContent = `${task.deadline_sec.toFixed(1)}s`;
 
     // Clear bids visual floor for new round
     const bidsList = document.getElementById('bidsVisualList');
-    bidsList.innerHTML = '';
+    if (bidsList) bidsList.innerHTML = '';
 }
 
 function renderIncomingBid(bid) {
     const bidsList = document.getElementById('bidsVisualList');
+    if (!bidsList) return;
     const existing = bidsList.querySelector(`[data-node="${bid.node_id}"]`);
     if (existing) return;
 
-    const botConf = botColors[bid.node_id] || { name: bid.node_id, border: '#FFF' };
+    const botConf = botColors[bid.node_id] || { name: bid.node_id, border: '#18181B' };
     const item = document.createElement('div');
     item.className = 'bid-item';
     item.dataset.node = bid.node_id;
     item.innerHTML = `
         <span class="bid-bot-name">
-            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${botConf.border};"></span>
-            ${botConf.name}
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${botConf.border};"></span>
+            ${botConf.name.split(' ')[0]}
         </span>
-        <span class="bid-price-tag" style="color: ${botConf.border}">€${bid.bid_price.toFixed(3)}</span>
+        <span class="bid-price-tag" style="color: var(--text-primary)">€${bid.bid_price.toFixed(3)}</span>
     `;
     bidsList.appendChild(item);
 }
@@ -301,8 +322,8 @@ function renderDeliberationStream(data) {
 
 function handleAuctionCleared(data) {
     const outcome = data.outcome;
-    document.getElementById('auctionStatusBadge').textContent = 'ROUND CLEARED';
-    document.getElementById('auctionStatusBadge').style.borderColor = 'var(--emerald)';
+    const badge = document.getElementById('auctionStatusBadge');
+    if (badge) badge.textContent = `Round #${outcome.round_number} Cleared`;
 
     // If winner has deliberation trace, keep stream aligned
     if (outcome.deliberation_steps || outcome.reasoning_trace) {
@@ -311,12 +332,12 @@ function handleAuctionCleared(data) {
 
     // Highlight winner in bids list
     const bidsList = document.getElementById('bidsVisualList');
-    if (outcome.winner_node_id) {
+    if (bidsList && outcome.winner_node_id) {
         const winnerItem = bidsList.querySelector(`[data-node="${outcome.winner_node_id}"]`);
         if (winnerItem) {
             winnerItem.classList.add('winner');
             winnerItem.innerHTML += `
-                <span style="color: var(--emerald); font-weight:700; font-size:0.75rem;">
+                <span style="color: var(--emerald); font-weight:700; font-size:0.75rem; margin-left:auto;">
                     🏆 WON @ €${outcome.clearing_price.toFixed(3)} (+€${outcome.profit.toFixed(2)})
                 </span>
             `;
@@ -338,32 +359,58 @@ function handleAuctionCleared(data) {
 
 function renderLeaderboard(leaderboard) {
     const tbody = document.getElementById('leaderboardBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     if (leaderboard.length > 0) {
         const top = leaderboard[0];
-        document.getElementById('kpiLeader').textContent = top.name.split(' ')[0];
-        document.getElementById('kpiLeaderProfit').textContent = `+€${top.cumulative_profit.toFixed(2)} Profit`;
+        const profitElem = document.getElementById('kpiLeaderProfit');
+        if (profitElem) {
+            const prefix = top.cumulative_profit >= 0 ? '+€' : '-€';
+            profitElem.textContent = `${prefix}${Math.abs(top.cumulative_profit).toFixed(2)}`;
+        }
+        const leaderElem = document.getElementById('kpiLeader');
+        if (leaderElem) {
+            leaderElem.textContent = top.name.split(' ')[0];
+        }
     }
+
+    const stratMap = {
+        "edge_agent_smart_04": "MultiAgent LPU Brain",
+        "node_greedy_02": "Greedy LowMargin",
+        "node_static_03": "Fixed 22% Margin",
+        "node_random_01": "Random Volatility"
+    };
+
+    const idMap = {
+        "edge_agent_smart_04": "#SMART-04",
+        "node_greedy_02": "#GREED-02",
+        "node_static_03": "#STATIC-03",
+        "node_random_01": "#RAND-01"
+    };
 
     leaderboard.forEach((row, idx) => {
         const tr = document.createElement('tr');
-        const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
         const isChampion = row.node_id.includes('smart');
+        const botConf = botColors[row.node_id] || { border: '#18181B', name: row.name };
+        const strat = stratMap[row.node_id] || "Heuristic Bot";
+        const shortId = idMap[row.node_id] || `#NODE-${idx+1}`;
 
         tr.innerHTML = `
-            <td class="rank-cell ${rankClass}">#${idx + 1}</td>
-            <td class="agent-name-cell ${isChampion ? 'champion' : ''}">
-                ${row.name}
+            <td>
+                <div class="table-agent-wrapper">
+                    <span class="agent-dot-avatar" style="background:${botConf.border};"></span>
+                    <span class="agent-name-bold ${isChampion ? 'champion' : ''}">${row.name.split(' ')[0]}</span>
+                </div>
             </td>
-            <td>${row.auctions_won} / ${row.bids_placed}</td>
-            <td>${row.win_rate_pct}%</td>
-            <td style="font-family: var(--font-mono); font-weight: 700; color: ${row.cumulative_profit >= 0 ? 'var(--emerald)' : 'var(--rose)'}">
-                €${row.cumulative_profit.toFixed(2)}
+            <td>${strat}</td>
+            <td style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);">${shortId}</td>
+            <td class="table-profit-cell" style="color: ${row.cumulative_profit >= 0 ? '#10B981' : '#EF4444'}">
+                € ${Math.abs(row.cumulative_profit).toFixed(2)}
             </td>
             <td>
-                <span class="sla-badge ${row.sla_violations === 0 ? 'clean' : 'warning'}">
-                    ${row.sla_violations} Flags
+                <span class="table-status-pill ${row.sla_violations === 0 ? 'paid' : 'warning'}">
+                    ${row.sla_violations === 0 ? 'Paid' : 'Flagged'}
                 </span>
             </td>
         `;
@@ -400,7 +447,17 @@ function updateChart(roundNumber, leaderboard) {
 }
 
 function renderTelemetry(telemetry) {
+    let totalUsed = 0;
+    for (const [nodeId, util] of Object.entries(telemetry)) {
+        totalUsed += (util.cpu_used || 0);
+    }
+    const coresElem = document.getElementById('kpiCores');
+    if (coresElem) {
+        coresElem.textContent = `${totalUsed.toFixed(1)} / 28 Cores`;
+    }
+
     const list = document.getElementById('telemetryList');
+    if (!list) return;
     list.innerHTML = '';
 
     for (const [nodeId, util] of Object.entries(telemetry)) {
