@@ -812,4 +812,39 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`/api/v1/simulation/speed?speed=${speed}`, { method: 'POST' });
         };
     });
+
+    // Fullscreen Chart Toggle
+    const btnFullscreen = document.getElementById('btnChartFullscreen');
+    const chartCard = document.getElementById('profitChartCard');
+    const iconEnter = document.getElementById('iconEnterFullscreen');
+    const iconExit = document.getElementById('iconExitFullscreen');
+
+    function toggleChartFullscreen() {
+        if (!chartCard) return;
+        const isFullscreen = chartCard.classList.toggle('chart-fullscreen-active');
+        if (isFullscreen) {
+            if (iconEnter) iconEnter.style.display = 'none';
+            if (iconExit) iconExit.style.display = 'inline-block';
+            if (btnFullscreen) btnFullscreen.title = 'Exit Fullscreen (Esc)';
+            document.body.style.overflow = 'hidden';
+        } else {
+            if (iconEnter) iconEnter.style.display = 'inline-block';
+            if (iconExit) iconExit.style.display = 'none';
+            if (btnFullscreen) btnFullscreen.title = 'View Fullscreen';
+            document.body.style.overflow = '';
+        }
+        setTimeout(() => {
+            if (profitChart) profitChart.resize();
+        }, 60);
+    }
+
+    if (btnFullscreen) {
+        btnFullscreen.addEventListener('click', toggleChartFullscreen);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chartCard?.classList.contains('chart-fullscreen-active')) {
+            toggleChartFullscreen();
+        }
+    });
 });

@@ -607,6 +607,33 @@ body {
     width: 100%;
 }
 
+/* Fullscreen Chart Overlay Mode */
+.card.chart-fullscreen-active {
+    position: fixed !important;
+    top: 24px !important;
+    left: 24px !important;
+    right: 24px !important;
+    bottom: 24px !important;
+    z-index: 99999 !important;
+    box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.45), 0 0 0 100vmax rgba(24, 25, 28, 0.7) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: var(--radius-lg) !important;
+    background: #FFFFFF !important;
+    padding: 32px 36px !important;
+}
+
+.card.chart-fullscreen-active .chart-container {
+    flex: 1 !important;
+    height: 100% !important;
+    min-height: 480px !important;
+    margin-top: 14px !important;
+}
+
+.card.chart-fullscreen-active .card-header h2 {
+    font-size: 20px !important;
+}
+
 /* Right Horizon Card (Calendar & Capacity Dial) */
 .horizon-card {
     display: flex;
@@ -1249,23 +1276,6 @@ body {
                     <button id="btnGoldenDemo" class="btn-promo">Run Demo Mode</button>
                 </div>
             </div>
-
-            <!-- Bottom Sidebar Controls -->
-            <div class="sidebar-bottom">
-                <div style="display: flex; gap: 6px;">
-                    <button id="btnStart" class="header-btn btn-primary" style="flex:1; justify-content:center; padding: 6px 10px;">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Run
-                    </button>
-                    <button id="btnPause" class="header-btn" style="flex:1; justify-content:center; padding: 6px 10px;">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                        Pause
-                    </button>
-                    <button id="btnReset" class="header-btn" style="padding: 6px 10px;" title="Reset Arena">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                    </button>
-                </div>
-            </div>
         </aside>
 
         <!-- 2. Main Content Area (Warm Silvery Gray #E5E3E6) -->
@@ -1285,6 +1295,22 @@ body {
             <div class="sub-header-bar">
                 <p class="sub-header-subtitle">CoGNETs Framework • Dynamic Reverse Auction Resource Scheduling</p>
                 <div class="sub-header-controls">
+                    <!-- Simulation Action Controls (Run, Pause, Restart) -->
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button id="btnStart" class="header-btn btn-primary" style="padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            Run
+                        </button>
+                        <button id="btnPause" class="header-btn" style="padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            Pause
+                        </button>
+                        <button id="btnReset" class="header-btn" style="padding: 6px 14px; font-size: 12px; font-weight: 700;" title="Restart Simulation">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 4px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Restart
+                        </button>
+                    </div>
+
                     <!-- Speed Controls -->
                     <div class="pill-switcher">
                         <button class="pill-btn btn-speed active" data-speed="1.0">1x</button>
@@ -1344,7 +1370,7 @@ body {
             <!-- Row 2: Middle Section (Matches Chart Card + Calendar Card in Image) -->
             <section class="middle-grid">
                 <!-- Left: Big Performance Chart Card -->
-                <div class="card">
+                <div class="card" id="profitChartCard">
                     <div class="card-header">
                         <h2>Cumulative Profit Dynamics</h2>
                         <div style="display: flex; gap: 8px; align-items: center;">
@@ -1352,6 +1378,10 @@ body {
                                 <button id="btnChartBars" class="pill-btn active" style="padding: 4px 10px; font-size: 11px;">Bars</button>
                                 <button id="btnChartLines" class="pill-btn" style="padding: 4px 10px; font-size: 11px;">Lines</button>
                             </div>
+                            <button id="btnChartFullscreen" class="card-icon-btn" title="View Fullscreen">
+                                <svg id="iconEnterFullscreen" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px;"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                <svg id="iconExitFullscreen" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:none; vertical-align: -1px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="chart-container">
