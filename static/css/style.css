@@ -1,5 +1,5 @@
 /* ==============================================================================
-   TALKAI - CoGNETs Smart Edge Auction Arena
+   BIDDING FLOOR - Edge Resource Auction Arena
    Exact Color & Background Palette matching Reference Mockup:
    - Main Background: #E5E3E6 (exact sampled warm silvery-gray from reference image)
    - Sidebar: #FFFFFF (crisp pure white)
@@ -127,11 +127,14 @@ body {
     font-weight: 800;
 }
 
+/* BIDDING FLOOR - Edge Resource Auction Arena */
+
 .brand-title {
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .nav-menu {

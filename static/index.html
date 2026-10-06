@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALKAI | CoGNETs Smart Edge Resource Auction Arena</title>
+    <title>BIDDING FLOOR | Edge Resource Auction Arena</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
 /* ==============================================================================
-   TALKAI - CoGNETs Smart Edge Auction Arena
+   BIDDING FLOOR - Edge Resource Auction Arena
    Exact Color & Background Palette matching Reference Mockup:
    - Main Background: #E5E3E6 (exact sampled warm silvery-gray from reference image)
    - Sidebar: #FFFFFF (crisp pure white)
@@ -143,10 +143,11 @@ body {
 }
 
 .brand-title {
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .nav-menu {
@@ -1227,23 +1228,28 @@ body {
             <div>
                 <!-- Brand Header -->
                 <div class="brand-header">
-                    <div class="brand-logo-icon">⚡</div>
-                    <span class="brand-title">TALKAI</span>
+                    <div class="brand-logo-icon">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m14 13-7.5 7.5a2.12 2.12 0 1 1-3-3L11 10"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/></svg>
+                    </div>
+                    <span class="brand-title">BIDDING FLOOR</span>
                 </div>
 
                 <!-- Navigation Menu -->
                 <ul class="nav-menu">
-                    <li><a href="#dashboard" class="nav-item active"><span class="nav-icon">⊞</span> Dashboard</a></li>
-                    <li><a href="#arena" class="nav-item"><span class="nav-icon">⚔️</span> Bidding Arena</a></li>
-                    <li><a href="#deliberation" class="nav-item"><span class="nav-icon">🧠</span> AI Reasoning</a></li>
-                    <li><a href="#topology" class="nav-item"><span class="nav-icon">🌐</span> Edge Topology</a></li>
-                    <li><a href="#leaderboard" class="nav-item"><span class="nav-icon">🏆</span> Leaderboard</a></li>
-                    <li><a href="#analytics" class="nav-item"><span class="nav-icon">📈</span> Analytics</a></li>
+                    <li><a href="#dashboard" class="nav-item active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a></li>
+                    <li><a href="#arena" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Bidding Arena</a></li>
+                    <li><a href="#deliberation" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span> AI Reasoning</a></li>
+                    <li><a href="#topology" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Edge Topology</a></li>
+                    <li><a href="#leaderboard" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"/></svg></span> Leaderboard</a></li>
+                    <li><a href="#analytics" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analytics</a></li>
                 </ul>
 
                 <!-- Promo Card (Matches 'Upgrade To Pro' Card in Design Image) -->
                 <div class="sidebar-promo-card">
-                    <div class="promo-title">⭐ Golden Demo</div>
+                    <div class="promo-title">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Golden Demo
+                    </div>
                     <p class="promo-desc">Trigger the curated 10-round benchmark presentation for hackathon evaluation.</p>
                     <button id="btnGoldenDemo" class="btn-promo">Run Demo Mode</button>
                 </div>
@@ -1256,9 +1262,17 @@ body {
                     <span class="status-text">WS Live Connected</span>
                 </div>
                 <div style="display: flex; gap: 6px;">
-                    <button id="btnStart" class="header-btn btn-primary" style="flex:1; justify-content:center; padding: 6px 10px;">▶ Run</button>
-                    <button id="btnPause" class="header-btn" style="flex:1; justify-content:center; padding: 6px 10px;">⏸ Pause</button>
-                    <button id="btnReset" class="header-btn" style="padding: 6px 10px;" title="Reset Arena">🔄</button>
+                    <button id="btnStart" class="header-btn btn-primary" style="flex:1; justify-content:center; padding: 6px 10px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Run
+                    </button>
+                    <button id="btnPause" class="header-btn" style="flex:1; justify-content:center; padding: 6px 10px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align: -1px; margin-right: 4px;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        Pause
+                    </button>
+                    <button id="btnReset" class="header-btn" style="padding: 6px 10px;" title="Reset Arena">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    </button>
                 </div>
             </div>
         </aside>
@@ -1274,12 +1288,16 @@ body {
                 <div class="header-right-tools">
                     <!-- Search Bar (Matches Pill Search in Image) -->
                     <div class="search-box">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </span>
                         <input type="text" placeholder="Search...">
                     </div>
 
                     <!-- Notification Bell & User Avatar -->
-                    <button class="card-icon-btn" title="System Notifications">🔔</button>
+                    <button class="card-icon-btn" title="System Notifications">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </button>
                     <div class="user-avatar-btn" title="CognitiveSwarm AI Agent">AI</div>
                 </div>
             </header>
@@ -1298,7 +1316,7 @@ body {
 
                     <!-- Date Pill (Matches '1 Sep 2024 - 31 Sep 2024' in Image) -->
                     <div class="pill-btn date-pill">
-                        <span>📅</span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         <span>15 Oct 2026 - 20 Oct 2026</span>
                     </div>
 
@@ -1338,7 +1356,9 @@ body {
                     <span class="metric-label">Green Tariff Moat</span>
                     <div class="metric-val">85% Solar</div>
                     <div class="metric-footer">
-                        <span class="metric-badge gold">☀️ +21.5% Margin Inversion</span>
+                        <span class="metric-badge gold">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>+21.5% Margin Inversion
+                        </span>
                         <span class="metric-sub">Zero Surcharge</span>
                     </div>
                 </div>
@@ -1348,7 +1368,9 @@ body {
                     <span class="metric-label">SLA Protection Policy</span>
                     <div class="metric-val">0 Flags</div>
                     <div class="metric-footer">
-                        <span class="metric-badge green">🛡️ 100% NeMo Pass</span>
+                        <span class="metric-badge green">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>100% NeMo Pass
+                        </span>
                         <span class="metric-sub">Thermal Safe</span>
                     </div>
                 </div>
@@ -1430,10 +1452,13 @@ body {
                 <!-- Card A: Live Task Spec & Bids Floor -->
                 <div class="card">
                     <div class="card-header">
-                        <h2>⚡ Task Spec & Bidding Floor</h2>
+                        <h2>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Task Spec & Bidding Floor
+                        </h2>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <div class="timer-pill" id="auctionTimerPill">
-                                <span>⏱️</span>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 <span id="auctionTimer">00:03</span>s
                             </div>
                             <span class="metric-badge cyan">Vickrey 2nd-Price</span>
@@ -1484,7 +1509,7 @@ body {
                             </div>
                         </div>
                         <div class="bluff-alert-bar clean" id="sigBluffAlert">
-                            <span>🛡️</span>
+                            <span id="sigBluffIcon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                             <span id="sigBluffText">Rational Arena: No Overbid Bluff Detected</span>
                         </div>
                     </div>
@@ -1497,9 +1522,12 @@ body {
                 <!-- Card B: Multi-Agent Deliberation Inspector (Groq LPU / Track 4) -->
                 <div class="card" id="deliberation">
                     <div class="card-header">
-                        <h2>🧠 Multi-Agent Deliberation</h2>
+                        <h2>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 6px;"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                            Multi-Agent Deliberation
+                        </h2>
                         <div style="display: flex; gap: 6px; align-items: center;">
-                            <span class="groq-tag" id="groqStatusBadge">⚡ Groq LPU Engine</span>
+                            <span class="groq-tag" id="groqStatusBadge">Groq LPU Engine</span>
                             <span class="confidence-badge" id="traceConfidenceBadge">96% Consensus</span>
                         </div>
                     </div>
@@ -1507,16 +1535,16 @@ body {
                     <div class="reasoning-container">
                         <div class="deliberation-stream" id="deliberationStream">
                             <div class="agent-thought-item placeholder-thought">
-                                <span class="thought-role">🤖 CognitiveSwarm Team</span>
+                                <span class="thought-role">CognitiveSwarm Team</span>
                                 <p class="thought-body">Multi-Agent Deliberation loop standing by for next auction round...</p>
                             </div>
                         </div>
 
                         <div class="sponsor-tags-ribbon" id="sponsorTagsRibbon">
-                            <span class="sponsor-chip">⚡ Groq LPU: Real-Time AI</span>
-                            <span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA Guard (Sim)</span>
-                            <span class="sponsor-chip">📊 Meterless: Micro-Metering (Sim)</span>
-                            <span class="sponsor-chip">🌐 Zetaris: Virtualized Edge (Sim)</span>
+                            <span class="sponsor-chip">Groq LPU: Real-Time AI</span>
+                            <span class="sponsor-chip">NVIDIA NeMo: SLA Guard (Sim)</span>
+                            <span class="sponsor-chip">Meterless: Micro-Metering (Sim)</span>
+                            <span class="sponsor-chip">Zetaris: Virtualized Edge (Sim)</span>
                         </div>
                     </div>
                 </div>
@@ -1525,7 +1553,10 @@ body {
             <!-- Row 4: Cluster Topology Matrix (Node Cores & Live Telemetry) -->
             <section class="card" id="topology">
                 <div class="card-header">
-                    <h2>🌐 Edge Cluster Topology & Core Allocation Matrix</h2>
+                    <h2>
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 6px;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Edge Cluster Topology & Core Allocation Matrix
+                    </h2>
                     <span class="metric-badge green" id="clusterNodeCountBadge">6 Heterogeneous Nodes</span>
                 </div>
                 <div class="topology-grid" id="topologyGrid">
@@ -1538,7 +1569,9 @@ body {
                 <div class="card-header">
                     <h2>Market Leaderboard & Execution Ledger</h2>
                     <div style="display: flex; gap: 8px;">
-                        <button class="card-icon-btn" onclick="fetch('/api/v1/leaderboard')" title="Refresh">⟳</button>
+                        <button class="card-icon-btn" onclick="fetch('/api/v1/leaderboard')" title="Refresh">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        </button>
                         <button class="card-icon-btn" title="Expand">↗</button>
                     </div>
                 </div>

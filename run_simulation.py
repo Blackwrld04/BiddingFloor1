@@ -18,7 +18,7 @@ async def wait_for_coordinator():
             async with httpx.AsyncClient() as client:
                 res = await client.get(f"{COORDINATOR_URL}/api/v1/nodes", timeout=1.0)
                 if res.status_code == 200:
-                    print("✅ Coordinator is ONLINE and accepting connections!")
+                    print("[OK] Coordinator is ONLINE and accepting connections!")
                     return True
         except Exception:
             pass
@@ -27,8 +27,8 @@ async def wait_for_coordinator():
 
 async def main():
     print("=" * 70)
-    print("🚀 LAUNCHING VELES HACK 2026 - CHALLENGE 4 TESTBED & ARENA")
-    print(f"📊 Dashboard & Coordinator : {COORDINATOR_URL}")
+    print("[INIT] LAUNCHING VELES HACK 2026 - CHALLENGE 4 TESTBED & ARENA")
+    print(f"[HTTP] Dashboard & Coordinator : {COORDINATOR_URL}")
     print("=" * 70)
 
     # 1. Start uvicorn coordinator in subprocess
@@ -48,12 +48,12 @@ async def main():
         # 2. Wait for healthy response
         ready = await wait_for_coordinator()
         if not ready:
-            print("❌ Coordinator failed to initialize in time.")
+            print("[ERROR] Coordinator failed to initialize in time.")
             coord_process.terminate()
             return
 
         print("\n" + "=" * 70)
-        print(f"✨ ARENA WEB DASHBOARD IS LIVE AT: {COORDINATOR_URL}")
+        print(f"[READY] ARENA WEB DASHBOARD IS LIVE AT: {COORDINATOR_URL}")
         print("   Open this URL in your browser to view the real-time bidding battle!")
         print("=" * 70 + "\n")
 

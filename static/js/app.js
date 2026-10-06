@@ -146,7 +146,7 @@ function handleWsMessage(msg) {
 
         case "SHOWCASE_TRIGGERED":
             const badge = document.getElementById('auctionStatusBadge');
-            badge.textContent = '⭐ GOLDEN DEMO ACTIVE';
+            badge.textContent = 'GOLDEN DEMO ACTIVE';
             badge.style.borderColor = 'var(--gold)';
             badge.style.color = 'var(--gold)';
             break;
@@ -223,13 +223,20 @@ function renderActiveAuction(auction) {
         }
         const bluffEl = document.getElementById('sigBluffAlert');
         const bluffText = document.getElementById('sigBluffText');
+        const bluffIcon = document.getElementById('sigBluffIcon');
         if (bluffEl && bluffText) {
             if (sigs.bluff_detected) {
                 bluffEl.className = 'bluff-alert-bar';
-                bluffText.textContent = `⚠️ Bluff Alert: ${sigs.bluff_detected}`;
+                bluffText.textContent = `Bluff Alert: ${sigs.bluff_detected}`;
+                if (bluffIcon) {
+                    bluffIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+                }
             } else {
                 bluffEl.className = 'bluff-alert-bar clean';
-                bluffText.textContent = '🛡️ Rational Arena: No Overbid Bluff Detected';
+                bluffText.textContent = 'Rational Arena: No Overbid Bluff Detected';
+                if (bluffIcon) {
+                    bluffIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+                }
             }
         }
     }
@@ -297,36 +304,43 @@ function renderDeliberationStream(data) {
         if (tel.groq_inference) {
             const isLive = tel.groq_inference.status === 'ACTIVE_LPU';
             const latText = isLive ? `${tel.groq_inference.latency_ms}ms` : 'Ready';
-            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.5); color: #FB923C; font-weight:700;">⚡ Groq LPU: ${latText}</span>`;
+            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.5); color: #FB923C; font-weight:700;">Groq LPU: ${latText}</span>`;
             if (groqBadge && isLive) {
-                groqBadge.textContent = `⚡ Groq LPU (${tel.groq_inference.latency_ms}ms)`;
+                groqBadge.textContent = `Groq LPU (${tel.groq_inference.latency_ms}ms)`;
                 groqBadge.style.color = '#FB923C';
             }
         } else {
-            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">⚡ Groq LPU: Real-Time AI</span>`;
+            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">Groq LPU: Real-Time AI</span>`;
         }
 
         // Sponsor Track Integrations (Simulated/Verified)
         if (tel.nvidia_guardrail) {
             const status = tel.nvidia_guardrail.status === 'COMPLIANT' || tel.nvidia_guardrail.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
-            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: ${status}</span>`;
+            html += `<span class="sponsor-chip">NVIDIA NeMo: ${status}</span>`;
         } else {
-            html += `<span class="sponsor-chip">🛡️ NVIDIA NeMo: SLA Policy</span>`;
+            html += `<span class="sponsor-chip">NVIDIA NeMo: SLA Policy</span>`;
         }
         if (tel.meterless_metering) {
-            html += `<span class="sponsor-chip">📊 Meterless: Micro-Metered (${tel.meterless_metering.units || 'Active'})</span>`;
+            html += `<span class="sponsor-chip">Meterless: Micro-Metered (${tel.meterless_metering.units || 'Active'})</span>`;
         } else {
-            html += `<span class="sponsor-chip">📊 Meterless: Micro-Metering</span>`;
+            html += `<span class="sponsor-chip">Meterless: Micro-Metering</span>`;
         }
         const zet = tel.zetaris_telemetry || tel.zetaris_virtualization;
         if (zet) {
             const lat = zet.latency_ms || 1.2;
-            html += `<span class="sponsor-chip">🌐 Zetaris: ${lat}ms Query</span>`;
+            html += `<span class="sponsor-chip">Zetaris: ${lat}ms Query</span>`;
         } else {
-            html += `<span class="sponsor-chip">🌐 Zetaris: Virtualized Edge</span>`;
+            html += `<span class="sponsor-chip">Zetaris: Virtualized Edge</span>`;
         }
         ribbon.innerHTML = html;
     }
+
+    // Role vector icons
+    const svgBrain = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`;
+    const svgChart = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
+    const svgAlert = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+    const svgShield = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+    const svgSun = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:4px;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
 
     // Render steps
     if (data.deliberation_steps && data.deliberation_steps.length > 0) {
@@ -334,20 +348,20 @@ function renderDeliberationStream(data) {
         data.deliberation_steps.forEach((step) => {
             const role = (step.role || '').toUpperCase();
             let roleClass = 'synthesizer';
-            let roleIcon = '🧠';
+            let roleIcon = svgBrain;
             let roleTitle = 'Consensus Synthesizer';
 
             if (role.includes('ANALYST')) {
                 roleClass = 'analyst';
-                roleIcon = '📈';
+                roleIcon = svgChart;
                 roleTitle = 'Market Analyst (Proposer)';
             } else if (role.includes('GUARDIAN')) {
                 roleClass = (step.status === 'OBJECTION') ? 'objection' : 'guardian';
-                roleIcon = (step.status === 'OBJECTION') ? '⚠️' : '🛡️';
+                roleIcon = (step.status === 'OBJECTION') ? svgAlert : svgShield;
                 roleTitle = (step.status === 'OBJECTION') ? 'Capacity Guardian (Objection)' : 'Capacity Guardian (Critic)';
             } else if (role.includes('ARBITRAGE')) {
                 roleClass = 'arbitrage';
-                roleIcon = '☀️';
+                roleIcon = svgSun;
                 roleTitle = 'Green Arbitrage Specialist';
             }
 
@@ -371,7 +385,7 @@ function renderDeliberationStream(data) {
         stream.innerHTML = `
             <div class="agent-thought-item synthesizer">
                 <div class="thought-role">
-                    <span>🧠 Multi-Agent Consensus</span>
+                    <span>${svgBrain} Multi-Agent Consensus</span>
                 </div>
                 <div class="thought-body">${data.reasoning_trace}</div>
             </div>
@@ -396,8 +410,8 @@ function handleAuctionCleared(data) {
         if (winnerItem) {
             winnerItem.classList.add('winner');
             winnerItem.innerHTML += `
-                <span style="color: var(--emerald); font-weight:700; font-size:0.75rem;">
-                    🏆 WON @ €${outcome.clearing_price.toFixed(3)} (+€${outcome.profit.toFixed(2)})
+                <span style="color: var(--emerald); font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:3px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"/></svg>WON @ €${outcome.clearing_price.toFixed(3)} (+€${outcome.profit.toFixed(2)})
                 </span>
             `;
         }
@@ -445,7 +459,7 @@ function renderLeaderboard(leaderboard) {
             <td class="agent-name-cell ${isChampion ? 'champion' : ''}">
                 <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${botConf.border};"></span>
                 ${row.name}
-                ${isChampion ? '<span style="font-size:10px; background:#18191C; color:#FFF; padding:2px 6px; border-radius:9999px;">👑 Pro</span>' : ''}
+                ${isChampion ? '<span style="font-size:10px; font-weight:700; background:#18191C; color:#FFF; padding:2px 6px; border-radius:9999px; letter-spacing:0.5px;">PRO</span>' : ''}
             </td>
             <td>
                 <span class="strategy-badge ${badgeClass}">${stratName}</span>
@@ -595,7 +609,7 @@ function renderTopologyGrid(nodes, telemetry, winnerNodeId) {
                     <div class="tile-zone">${node.location_zone || 'EU-VALENCIA'}</div>
                 </div>
                 <div class="tile-badge-power ${isSolar ? 'power-solar' : 'power-grid'}">
-                    ${isSolar ? '☀️ 85% Solar' : '⚡ Grid Power'}
+                    ${isSolar ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-1px; margin-right:2px;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>85% Solar' : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-1px; margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Grid Power'}
                 </div>
             </div>
 
@@ -630,7 +644,7 @@ function resetClientState() {
     if (stream) {
         stream.innerHTML = `
             <div class="agent-thought-item placeholder-thought">
-                <span class="thought-role">🤖 CognitiveSwarm Team</span>
+                <span class="thought-role">CognitiveSwarm Team</span>
                 <p class="thought-body">Multi-Agent Deliberation loop standing by for next auction round...</p>
             </div>
         `;
