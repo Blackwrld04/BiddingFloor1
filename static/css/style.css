@@ -381,14 +381,13 @@ body {
     flex-wrap: wrap;
 }
 
-/* Filter Pills (Matches Day / Week / Month / Year in Image) */
+/* Filter Pills - Plain Background */
 .pill-switcher {
-    background: #FFFFFF;
-    border-radius: var(--radius-pill);
-    padding: 4px;
+    background: transparent;
+    padding: 0;
     display: flex;
     gap: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: none;
 }
 
 .pill-btn {
@@ -398,8 +397,7 @@ body {
     font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 600;
-    padding: 6px 14px;
-    border-radius: var(--radius-pill);
+    padding: 6px 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -411,18 +409,22 @@ body {
     color: var(--text-primary);
 }
 
-/* Active Pill (Matches exact #7A787B graphite capsule of 'Month' in Image) */
+/* Active Pill - Text on plain background */
 .pill-btn.active {
-    background: var(--bg-pill-active);
-    color: #FFFFFF;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    background: transparent;
+    color: var(--text-primary);
+    font-weight: 800;
+    box-shadow: none;
+    border-bottom: 2px solid var(--text-primary);
+    border-radius: 0;
 }
 
 .date-pill {
-    background: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    background: transparent;
+    box-shadow: none;
     cursor: default;
     color: var(--text-primary);
+    padding: 6px 8px;
 }
 
 .header-btn {
@@ -523,29 +525,29 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 3px 8px;
-    border-radius: var(--radius-pill);
+    padding: 0;
+    background: transparent !important;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .metric-badge.green {
-    background: var(--accent-green-bg);
+    background: transparent !important;
     color: var(--accent-green-text);
 }
 
 .metric-badge.dark-green {
-    background: rgba(34, 197, 94, 0.2);
+    background: transparent !important;
     color: #4ADE80;
 }
 
 .metric-badge.gold {
-    background: var(--accent-gold-bg);
+    background: transparent !important;
     color: var(--accent-gold-text);
 }
 
 .metric-badge.cyan {
-    background: var(--accent-cyan-bg);
+    background: transparent !important;
     color: var(--accent-cyan-text);
 }
 
@@ -641,23 +643,24 @@ body {
     font-weight: 600;
 }
 
-/* Active Day Capsule (Matches Thu 19 in Image) */
+/* Active Day - Plain Background */
 .cal-day-col.active-capsule {
-    background: var(--bg-pill-active);
-    color: #FFFFFF;
-    border-radius: 14px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 14px rgba(122, 120, 123, 0.35);
+    background: transparent;
+    color: var(--text-primary);
+    border-radius: 0;
+    padding: 6px 14px;
+    box-shadow: none;
+    border-bottom: 2px solid var(--text-primary);
 }
 
 .cal-day-col.active-capsule .cal-day-name {
-    color: #FFFFFF;
-    font-weight: 600;
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
 .cal-day-col.active-capsule .cal-day-num {
-    color: #FFFFFF;
-    font-weight: 700;
+    color: var(--text-primary);
+    font-weight: 800;
     font-size: 15px;
 }
 
@@ -789,26 +792,24 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #FEF3C7;
+    background: transparent !important;
     color: #B45309;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    font-size: 10px;
+    padding: 2px 0;
+    font-size: 11px;
     font-weight: 600;
 }
 
 .bluff-alert-bar.clean {
-    background: #ECFDF5;
+    background: transparent !important;
     color: #065F46;
 }
 
 /* Timer Pill */
 .timer-pill {
-    background: #F3F4F6;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-pill);
-    padding: 3px 10px;
-    font-size: 11px;
+    background: transparent !important;
+    border: none;
+    padding: 0;
+    font-size: 12px;
     font-weight: 600;
     font-family: var(--font-mono);
     color: var(--text-secondary);
@@ -820,20 +821,19 @@ body {
 /* Strategy Badges */
 .strategy-badge {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-    font-size: 10px;
+    padding: 0;
+    font-size: 11px;
     font-weight: 600;
-    background: #F3F4F6;
-    color: var(--text-secondary);
+    background: transparent !important;
+    border: none;
 }
 
-.strategy-badge.nash { background: #DBEAFE; color: #1E40AF; }
-.strategy-badge.bayes { background: #EDE9FE; color: #6D28D9; }
-.strategy-badge.dominant { background: #D1FAE5; color: #065F46; }
-.strategy-badge.aggro { background: #FEE2E2; color: #991B1B; }
-.strategy-badge.frugal { background: #FEF3C7; color: #92400E; }
-.strategy-badge.smart { background: #18191C; color: #FFFFFF; }
+.strategy-badge.nash { background: transparent !important; color: #1E40AF; }
+.strategy-badge.bayes { background: transparent !important; color: #6D28D9; }
+.strategy-badge.dominant { background: transparent !important; color: #065F46; }
+.strategy-badge.aggro { background: transparent !important; color: #991B1B; }
+.strategy-badge.frugal { background: transparent !important; color: #92400E; }
+.strategy-badge.smart { background: transparent !important; color: var(--text-primary); font-weight: 700; }
 
 /* Efficiency Meter */
 .efficiency-meter-container {
@@ -946,18 +946,17 @@ body {
 }
 
 .confidence-badge {
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
+    padding: 0;
     font-size: 11px;
     font-weight: 700;
     font-family: var(--font-mono);
-    background: var(--accent-green-bg);
+    background: transparent !important;
     color: var(--accent-green-text);
 }
 
 .sponsor-tags-ribbon {
     display: flex;
-    gap: 6px;
+    gap: 12px;
     flex-wrap: wrap;
     margin-top: 8px;
     padding-top: 10px;
@@ -965,22 +964,20 @@ body {
 }
 
 .sponsor-chip {
-    font-size: 10px;
+    font-size: 11px;
     font-family: var(--font-mono);
     color: var(--text-secondary);
-    background: #F3F4F6;
-    padding: 3px 8px;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--border-subtle);
+    background: transparent !important;
+    padding: 0;
+    border: none;
 }
 
 .groq-tag {
-    background: #FFF7ED;
+    background: transparent !important;
     color: #EA580C;
-    border: 1px solid #FFEDD5;
+    border: none;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
+    padding: 0;
     font-size: 11px;
 }
 
@@ -1029,17 +1026,17 @@ body {
 .tile-badge-power {
     font-size: 10px;
     font-weight: 600;
-    padding: 2px 6px;
-    border-radius: var(--radius-pill);
+    padding: 0;
+    background: transparent !important;
 }
 
 .power-solar {
-    background: var(--accent-green-bg);
+    background: transparent !important;
     color: var(--accent-green-text);
 }
 
 .power-grid {
-    background: var(--accent-gold-bg);
+    background: transparent !important;
     color: var(--accent-gold-text);
 }
 
@@ -1080,14 +1077,14 @@ body {
 }
 
 .status-pill {
-    padding: 2px 6px;
-    border-radius: var(--radius-pill);
-    font-weight: 600;
+    padding: 0;
+    font-weight: 700;
+    background: transparent !important;
 }
 
-.status-pill.idle { background: #E5E7EB; color: #4B5563; }
-.status-pill.active { background: var(--accent-cyan-bg); color: var(--accent-cyan-text); }
-.status-pill.overload { background: var(--accent-rose-bg); color: var(--accent-rose-text); }
+.status-pill.idle { background: transparent !important; color: #6B7280; }
+.status-pill.active { background: transparent !important; color: var(--accent-cyan-text); }
+.status-pill.overload { background: transparent !important; color: var(--accent-rose-text); }
 
 /* ==============================================================================
    7. Bottom Leaderboard Table (Matches 'Course Purchases' in Reference Image)
@@ -1146,22 +1143,20 @@ body {
 
 /* Status Pill (Matches the exact #7A787B graphite capsule of 'Paid' in Image) */
 .sla-badge.clean {
-    background: var(--bg-pill-active);
-    color: #FFFFFF;
-    padding: 4px 14px;
-    border-radius: var(--radius-pill);
+    background: transparent !important;
+    color: #059669;
+    padding: 0;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     display: inline-block;
 }
 
 .sla-badge.warning {
-    background: var(--accent-rose);
-    color: #FFFFFF;
-    padding: 4px 14px;
-    border-radius: var(--radius-pill);
+    background: transparent !important;
+    color: #DC2626;
+    padding: 0;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     display: inline-block;
 }
 

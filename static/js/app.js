@@ -147,8 +147,8 @@ function handleWsMessage(msg) {
         case "SHOWCASE_TRIGGERED":
             const badge = document.getElementById('auctionStatusBadge');
             badge.textContent = 'GOLDEN DEMO ACTIVE';
-            badge.style.borderColor = 'var(--gold)';
             badge.style.color = 'var(--gold)';
+            badge.style.background = 'transparent';
             break;
 
         case "AUCTION_OPENED":
@@ -195,7 +195,8 @@ function renderActiveAuction(auction) {
     document.getElementById('kpiRound').textContent = `Round #${auction.round_number}`;
     document.getElementById('kpiTaskType').textContent = auction.task.task_type;
     document.getElementById('auctionStatusBadge').textContent = 'AUCTION OPEN';
-    document.getElementById('auctionStatusBadge').style.borderColor = 'var(--cyan)';
+    document.getElementById('auctionStatusBadge').style.color = 'var(--accent-cyan-text)';
+    document.getElementById('auctionStatusBadge').style.background = 'transparent';
 
     // Start live countdown timer
     startAuctionCountdown(auction.duration_sec || 2.5);
@@ -277,21 +278,17 @@ function renderDeliberationStream(data) {
         const confPct = Math.round((data.confidence || 0.95) * 100);
         let statusText = `${confPct}% Confidence (CONSENSUS)`;
         let statusColor = 'var(--emerald)';
-        let statusBg = 'rgba(16, 185, 129, 0.15)';
-        let statusBorder = 'rgba(16, 185, 129, 0.3)';
 
         // Check if any step had objection
         const hasObjection = data.deliberation_steps && data.deliberation_steps.some(s => s.status === 'OBJECTION');
         if (hasObjection) {
             statusText = `Objection Resolved (${confPct}%)`;
             statusColor = 'var(--gold)';
-            statusBg = 'rgba(245, 158, 11, 0.15)';
-            statusBorder = 'rgba(245, 158, 11, 0.3)';
         }
         badge.textContent = statusText;
         badge.style.color = statusColor;
-        badge.style.background = statusBg;
-        badge.style.borderColor = statusBorder;
+        badge.style.background = 'transparent';
+        badge.style.border = 'none';
     }
 
     // Update sponsor tags ribbon
@@ -396,7 +393,8 @@ function renderDeliberationStream(data) {
 function handleAuctionCleared(data) {
     const outcome = data.outcome;
     document.getElementById('auctionStatusBadge').textContent = 'ROUND CLEARED';
-    document.getElementById('auctionStatusBadge').style.borderColor = 'var(--emerald)';
+    document.getElementById('auctionStatusBadge').style.color = 'var(--accent-green-text)';
+    document.getElementById('auctionStatusBadge').style.background = 'transparent';
 
     // If winner has deliberation trace, keep stream aligned
     if (outcome.deliberation_steps || outcome.reasoning_trace) {
@@ -459,7 +457,7 @@ function renderLeaderboard(leaderboard) {
             <td class="agent-name-cell ${isChampion ? 'champion' : ''}">
                 <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${botConf.border};"></span>
                 ${row.name}
-                ${isChampion ? '<span style="font-size:10px; font-weight:700; background:#18191C; color:#FFF; padding:2px 6px; border-radius:9999px; letter-spacing:0.5px;">PRO</span>' : ''}
+                ${isChampion ? '<span style="font-size:10px; font-weight:800; color:#18191C; letter-spacing:0.5px; border-bottom:1.5px solid #18191C; margin-left:4px;">PRO</span>' : ''}
             </td>
             <td>
                 <span class="strategy-badge ${badgeClass}">${stratName}</span>
@@ -652,9 +650,9 @@ function resetClientState() {
     const badge = document.getElementById('traceConfidenceBadge');
     if (badge) {
         badge.textContent = 'Awaiting Decision';
-        badge.style.color = 'var(--emerald)';
-        badge.style.background = 'rgba(16, 185, 129, 0.15)';
-        badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        badge.style.color = 'var(--accent-green-text)';
+        badge.style.background = 'transparent';
+        badge.style.border = 'none';
     }
 }
 
