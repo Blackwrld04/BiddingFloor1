@@ -150,11 +150,11 @@ def test_multi_agent_deliberation_consensus():
     assert AgentRole.GREEN_ARBITRAGE in roles
     assert AgentRole.SYNTHESIZER in roles
 
-    # Sponsor telemetry verification (NVIDIA NeMo, Meterless, Zetaris)
-    assert "nvidia_guardrail" in delib.sponsor_telemetry
-    assert "meterless_metering" in delib.sponsor_telemetry
-    assert "zetaris_telemetry" in delib.sponsor_telemetry
-    assert delib.sponsor_telemetry["nvidia_guardrail"]["status"] == "COMPLIANT"
+    # Edge telemetry verification (SLA Guardrails, Compute Metering, Cluster Telemetry)
+    assert "sla_guardrail" in delib.sponsor_telemetry
+    assert "compute_metering" in delib.sponsor_telemetry
+    assert "cluster_telemetry" in delib.sponsor_telemetry
+    assert delib.sponsor_telemetry["sla_guardrail"]["status"] == "COMPLIANT"
 
 def test_multi_agent_capacity_guardian_objection():
     from agent.strategies.multi_agent_team import MultiAgentReasoningStrategy
@@ -238,5 +238,23 @@ def test_groq_reasoner_fallback_and_payload():
     # Synchronous deliberate returns None on unconfigured key
     res = reasoner.deliberate_sync(auction, state, adaptive_margin=0.15)
     assert res is None
+
+def test_showcase_golden_demo_mode():
+    market = MarketEngine()
+    market.set_showcase_mode(True)
+    assert market.showcase_mode is True
+    t1 = market.generate_task()
+    assert "r001" in t1.task_id
+    assert t1.task_type == "edge_sensor_fusion"
+    t2 = market.generate_task()
+    assert "r002" in t2.task_id
+    assert t2.task_type == "yolo_v10_inference"
+
+def test_strategy_selection_team():
+    from agent.main import get_strategy
+    from agent.strategies.multi_agent_team import MultiAgentReasoningStrategy
+    strat = get_strategy("team")
+    assert isinstance(strat, MultiAgentReasoningStrategy)
+
 
 

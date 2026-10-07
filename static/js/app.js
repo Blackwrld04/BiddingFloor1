@@ -330,24 +330,19 @@ function renderDeliberationStream(data) {
             html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">Groq LPU: Real-Time AI</span>`;
         }
 
-        // Sponsor Track Integrations (Simulated/Verified)
-        if (tel.nvidia_guardrail) {
-            const status = tel.nvidia_guardrail.status === 'COMPLIANT' || tel.nvidia_guardrail.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
-            html += `<span class="sponsor-chip">NVIDIA NeMo: ${status}</span>`;
+        // Native Edge Telemetry Chips
+        const guard = tel.sla_guardrail;
+        if (guard) {
+            const status = guard.status === 'COMPLIANT' || guard.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
+            html += `<span class="sponsor-chip">SLA Policy: ${status}</span>`;
         } else {
-            html += `<span class="sponsor-chip">NVIDIA NeMo: SLA Policy</span>`;
+            html += `<span class="sponsor-chip">SLA Policy: Active</span>`;
         }
-        if (tel.meterless_metering) {
-            html += `<span class="sponsor-chip">Meterless: Micro-Metered (${tel.meterless_metering.units || 'Active'})</span>`;
-        } else {
-            html += `<span class="sponsor-chip">Meterless: Micro-Metering</span>`;
+        if (tel.compute_metering) {
+            html += `<span class="sponsor-chip">Micro-Metering: Active</span>`;
         }
-        const zet = tel.zetaris_telemetry || tel.zetaris_virtualization;
-        if (zet) {
-            const lat = zet.latency_ms || 1.2;
-            html += `<span class="sponsor-chip">Zetaris: ${lat}ms Query</span>`;
-        } else {
-            html += `<span class="sponsor-chip">Zetaris: Virtualized Edge</span>`;
+        if (tel.cluster_telemetry) {
+            html += `<span class="sponsor-chip">Edge Fabric: Online</span>`;
         }
         ribbon.innerHTML = html;
     }
@@ -476,6 +471,17 @@ function renderLeaderboard(leaderboard) {
         const top = leaderboard[0];
         document.getElementById('kpiLeader').textContent = top.name.split(' ')[0];
         document.getElementById('kpiLeaderProfit').textContent = `+€${top.cumulative_profit.toFixed(2)}`;
+        const badgeEl = document.getElementById('kpiLeaderBadge');
+        if (badgeEl) {
+            if (leaderboard.length > 1 && leaderboard[1].cumulative_profit > 0 && top.cumulative_profit > leaderboard[1].cumulative_profit) {
+                const leadPct = Math.round(((top.cumulative_profit - leaderboard[1].cumulative_profit) / leaderboard[1].cumulative_profit) * 100);
+                badgeEl.textContent = `↗ +${leadPct}% vs Runner-Up`;
+            } else if (top.cumulative_profit > 0) {
+                badgeEl.textContent = '↗ Market Leader';
+            } else {
+                badgeEl.textContent = 'Live Arena';
+            }
+        }
     }
 
     leaderboard.forEach((row, idx) => {
@@ -519,7 +525,7 @@ function renderLeaderboard(leaderboard) {
             </td>
             <td>
                 <span class="sla-badge ${row.sla_violations === 0 ? 'clean' : 'warning'}">
-                    ${row.sla_violations === 0 ? 'NeMo Clean' : row.sla_violations + ' Flags'}
+                    ${row.sla_violations === 0 ? 'SLA Clean' : row.sla_violations + ' Flags'}
                 </span>
             </td>
         `;
@@ -578,6 +584,9 @@ function renderChartFromHistory(history) {
 function renderChartFromLeaderboard(leaderboard) {
     if (!profitChart || !leaderboard || leaderboard.length === 0) return;
     if (profitChart.data.labels.length > 0) return;
+
+    const hasAnyProfit = leaderboard.some(l => l.cumulative_profit > 0);
+    if (!hasAnyProfit) return;
 
     profitChart.data.labels = ['R1'];
     profitChart.data.datasets.forEach(ds => {
@@ -769,6 +778,29 @@ function resetClientState() {
         badge.style.background = 'transparent';
         badge.style.border = 'none';
     }
+
+    // Reset KPIs and Analytics cards to clean zero/standby state
+    const kpiProfit = document.getElementById('kpiLeaderProfit');
+    if (kpiProfit) kpiProfit.textContent = '+€0.00';
+    const kpiBadge = document.getElementById('kpiLeaderBadge');
+    if (kpiBadge) kpiBadge.textContent = 'Live Arena';
+    const kpiRound = document.getElementById('kpiRound');
+    if (kpiRound) kpiRound.textContent = 'Round #0';
+    const aucBadge = document.getElementById('auctionStatusBadge');
+    if (aucBadge) aucBadge.textContent = 'STANDBY';
+    const taskType = document.getElementById('kpiTaskType');
+    if (taskType) taskType.textContent = 'Awaiting Auction';
+
+    const effEl = document.getElementById('analyticsEfficiency');
+    if (effEl) effEl.textContent = '--';
+    const nashEl = document.getElementById('analyticsNashRate');
+    if (nashEl) nashEl.textContent = '--';
+    const solarEl = document.getElementById('analyticsSolarSavings');
+    if (solarEl) solarEl.textContent = '+€0.00';
+    const capVal = document.getElementById('dialCapacityVal');
+    if (capVal) capVal.textContent = '0%';
+    const capRing = document.getElementById('dialCapacityRing');
+    if (capRing) capRing.setAttribute('stroke-dasharray', '0, 100');
 }
 
 // Attach UI Event Listeners
@@ -833,81 +865,4 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleChartFullscreen();
         }
     });
-
-    // -------------------------------------------------------------
-    // Groq LPU Configuration Modal & Live Status Handlers
-    // -------------------------------------------------------------
-    function checkGroqStatus() {
-        fetch('/api/v1/config/groq/status')
-            .then(r => r.json())
-            .then(data => {
-                const dot = document.getElementById('groqStatusDot');
-                const label = document.getElementById('groqStatusLabel');
-                const badge = document.getElementById('groqStatusBadge');
-                if (data.is_configured) {
-                    if (dot) dot.style.background = '#10B981';
-                    if (label) label.textContent = `Groq LPU: Active`;
-                    if (badge) badge.textContent = `Groq LPU (${data.model.split('-')[1] || '70B'})`;
-                } else {
-                    if (dot) dot.style.background = '#F59E0B';
-                    if (label) label.textContent = 'Groq LPU: Configure';
-                }
-            })
-            .catch(() => {});
-    }
-    checkGroqStatus();
-
-    const groqModal = document.getElementById('groqModal');
-    const btnGroqConfig = document.getElementById('btnGroqConfig');
-    const btnCloseGroqModal = document.getElementById('btnCloseGroqModal');
-    const btnCancelGroq = document.getElementById('btnCancelGroq');
-    const btnSaveGroq = document.getElementById('btnSaveGroq');
-    const inputGroqKey = document.getElementById('inputGroqKey');
-    const selectGroqModel = document.getElementById('selectGroqModel');
-
-    if (btnGroqConfig) {
-        btnGroqConfig.onclick = () => {
-            if (groqModal) groqModal.style.display = 'flex';
-        };
-    }
-    if (btnCloseGroqModal) {
-        btnCloseGroqModal.onclick = () => {
-            if (groqModal) groqModal.style.display = 'none';
-        };
-    }
-    if (btnCancelGroq) {
-        btnCancelGroq.onclick = () => {
-            if (groqModal) groqModal.style.display = 'none';
-        };
-    }
-    if (btnSaveGroq) {
-        btnSaveGroq.onclick = async () => {
-            const key = inputGroqKey ? inputGroqKey.value.trim() : '';
-            const model = selectGroqModel ? selectGroqModel.value : 'llama-3.3-70b-versatile';
-            if (!key) {
-                alert('Please enter your Groq API key (starts with gsk_...)');
-                return;
-            }
-            btnSaveGroq.textContent = 'Activating...';
-            try {
-                const res = await fetch('/api/v1/config/groq', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ api_key: key, model: model })
-                });
-                const result = await res.json();
-                if (res.ok) {
-                    if (groqModal) groqModal.style.display = 'none';
-                    checkGroqStatus();
-                    btnSaveGroq.textContent = 'Save & Activate';
-                } else {
-                    alert(result.detail || 'Failed to save Groq API key.');
-                    btnSaveGroq.textContent = 'Save & Activate';
-                }
-            } catch (err) {
-                alert('Error connecting Groq API: ' + err.message);
-                btnSaveGroq.textContent = 'Save & Activate';
-            }
-        };
-    }
 });

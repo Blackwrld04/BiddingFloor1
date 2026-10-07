@@ -164,7 +164,7 @@ class GroqReasoner:
             ],
             "response_format": {"type": "json_object"},
             "temperature": 0.2,
-            "max_tokens": 380
+            "max_tokens": 650
         }
 
     def _parse_groq_response(
@@ -221,7 +221,18 @@ class GroqReasoner:
                 proposed_bid=step_bid
             ))
 
-        # Attach telemetry hooks (Groq LPU + NVIDIA NeMo + Meterless + Zetaris stubs)
+        # Ensure Synthesizer step is always included in multi-agent consensus
+        if not any(s.role == AgentRole.SYNTHESIZER for s in steps):
+            steps.append(DeliberationStep(
+                step_number=len(steps) + 1,
+                role=AgentRole.SYNTHESIZER,
+                status=DeliberationStatus.CONSENSUS if final_bid is not None else DeliberationStatus.OBJECTION,
+                thought=summary,
+                confidence=confidence,
+                proposed_bid=final_bid
+            ))
+
+        # Attach edge telemetry hooks (Groq LPU + SLA Guardrails + Compute Metering + Cluster Telemetry)
         avail_cores = max(0.0, state.cpu_cores - state.get_used_cpu())
         guardrail = self.sponsor_hub.verify_sla_guardrails(
             task_type=task.task_type,
@@ -234,7 +245,7 @@ class GroqReasoner:
             duration_sec=task.execution_duration_sec,
             cores=task.required_cpu
         )
-        zetaris_info = self.sponsor_hub.query_cluster_telemetry(location_zone="eu-valencia-edge")
+        cluster_info = self.sponsor_hub.query_cluster_telemetry(location_zone="eu-valencia-edge")
 
         sponsor_telemetry = {
             "groq_inference": {
@@ -243,9 +254,9 @@ class GroqReasoner:
                 "latency_ms": round(latency_ms, 1),
                 "engine": "Groq Tensor Streaming Processor"
             },
-            "nvidia_guardrail": guardrail,
-            "meterless_metering": metering,
-            "zetaris_telemetry": zetaris_info
+            "sla_guardrail": guardrail,
+            "compute_metering": metering,
+            "cluster_telemetry": cluster_info
         }
 
         return DeliberationResult(

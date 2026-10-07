@@ -17,5 +17,8 @@ COPY . .
 # Expose Coordinator & Dashboard port
 EXPOSE 8000
 
+ENV PORT=8000
+ENV PYTHONUNBUFFERED=1
+
 # Default entrypoint runs the full simulation testbed
 CMD ["python", "run_simulation.py"]

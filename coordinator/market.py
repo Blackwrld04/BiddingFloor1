@@ -29,7 +29,7 @@ class MarketEngine:
         self.round_counter: int = 0
         self.is_running: bool = False
         self.subscribers: List[asyncio.Queue] = []
-        self.round_interval_sec: float = 2.5
+        self.round_interval_sec: float = 3.0
         self.simulation_speed: float = 1.0
         self.showcase_mode: bool = False
         self.showcase_step: int = 0

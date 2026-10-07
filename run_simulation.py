@@ -11,8 +11,8 @@ load_dotenv()
 
 from agent.main import run_agent
 
-COORDINATOR_PORT = 8000
-COORDINATOR_URL = f"http://localhost:{COORDINATOR_PORT}"
+COORDINATOR_PORT = int(os.getenv("PORT", "8000"))
+COORDINATOR_URL = f"http://127.0.0.1:{COORDINATOR_PORT}"
 
 async def wait_for_coordinator():
     print("[*] Waiting for Auction Coordinator to boot...")
@@ -78,7 +78,7 @@ async def main():
             coord_process.wait(timeout=2)
         except Exception:
             coord_process.kill()
-        print("✅ All processes cleanly stopped.")
+        print("[OK] All processes cleanly stopped.")
 
 if __name__ == "__main__":
     try:

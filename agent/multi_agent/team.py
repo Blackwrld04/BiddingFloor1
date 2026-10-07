@@ -85,7 +85,7 @@ class MultiAgentDeliberationTeam:
             guardian_thought = (
                 f"OBJECTION: Projected core consumption ({state.get_used_cpu() + task.required_cpu:.1f}/{state.cpu_cores}c) "
                 f"exceeds safe threshold of 85.0%. Accepting task introduces thermal degradation risk and "
-                f"50% SLA penalty. NeMo policy evaluation: {guardrail_result['reason']}. VETO: Skip this auction."
+                f"50% SLA penalty. SLA policy evaluation: {guardrail_result['reason']}. VETO: Skip this auction."
             )
             steps.append(DeliberationStep(
                 step_number=step_idx,
@@ -102,7 +102,7 @@ class MultiAgentDeliberationTeam:
                 reasoning_summary="Skipped: Node capacity exceeded 85% safety threshold.",
                 steps=steps,
                 sla_risk_level="CRITICAL",
-                sponsor_telemetry={"nvidia_guardrail": guardrail_result}
+                sponsor_telemetry={"sla_guardrail": guardrail_result}
             )
 
         # Soft Gate: Strategic Patience (Critique Loop)
@@ -127,13 +127,13 @@ class MultiAgentDeliberationTeam:
                 reasoning_summary="Strategic Patience: Preserving CPU headroom for higher-margin enterprise tasks.",
                 steps=steps,
                 sla_risk_level="MEDIUM",
-                sponsor_telemetry={"nvidia_guardrail": guardrail_result}
+                sponsor_telemetry={"sla_guardrail": guardrail_result}
             )
 
         guardian_thought = (
             f"CAPACITY APPROVAL: Available cores ({avail_cores:.1f}c) comfortably fits required {task.required_cpu}c. "
             f"Projected load: {((state.get_used_cpu() + task.required_cpu) / state.cpu_cores) * 100:.1f}%. "
-            f"NVIDIA NeMo Policy: {guardrail_result['status']}."
+            f"SLA Policy: {guardrail_result['status']}."
         )
         steps.append(DeliberationStep(
             step_number=step_idx,
@@ -190,7 +190,7 @@ class MultiAgentDeliberationTeam:
             duration_sec=task.execution_duration_sec,
             cores=task.required_cpu
         )
-        zetaris_info = self.sponsor_hub.query_cluster_telemetry(location_zone="eu-valencia-edge")
+        cluster_info = self.sponsor_hub.query_cluster_telemetry(location_zone="eu-valencia-edge")
 
         summary = (
             f"Consensus Reached: Bid €{final_bid:.3f} for Task {task.task_id}. "
@@ -220,8 +220,8 @@ class MultiAgentDeliberationTeam:
                     "model": self.groq_reasoner.model,
                     "engine": "Groq LPU (Configured)" if self.groq_reasoner.is_configured else "Deterministic Engine (Provide GROQ_API_KEY)"
                 },
-                "nvidia_guardrail": guardrail_result,
-                "meterless_metering": metering,
-                "zetaris_telemetry": zetaris_info
+                "sla_guardrail": guardrail_result,
+                "compute_metering": metering,
+                "cluster_telemetry": cluster_info
             }
         )

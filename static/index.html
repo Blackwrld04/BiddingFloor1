@@ -1287,6 +1287,7 @@ body {
                     <li><a href="#topology" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Edge Topology</a></li>
                     <li><a href="#leaderboard" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/><path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"/></svg></span> Leaderboard</a></li>
                     <li><a href="#analytics" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analytics</a></li>
+                    <li><a href="/documentation" class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg></span> Documentation</a></li>
                 </ul>
             </div>
         </aside>
@@ -1300,10 +1301,10 @@ body {
                 </div>
 
                 <div class="header-right-tools" style="display: flex; align-items: center; gap: 10px;">
-                    <button id="btnGroqConfig" class="header-btn" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border: 1px solid var(--border-subtle); background: #FFFFFF; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-                        <span id="groqStatusDot" style="width: 7px; height: 7px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span>
-                        <span id="groqStatusLabel">Groq LPU: Configure</span>
-                    </button>
+                    <a href="/documentation" class="header-btn" style="padding: 6px 14px; font-size: 11px; font-weight: 700; border: 1px solid var(--border-subtle); background: #FFFFFF; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text-primary); cursor: pointer;" title="Open Technical Documentation">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                        Documentation
+                    </a>
                     <div class="user-avatar-btn" title="CognitiveSwarm AI Agent">AI</div>
                 </div>
             </header>
@@ -1344,7 +1345,7 @@ body {
                     <span class="metric-label">Leader Cumulative Profit</span>
                     <div class="metric-val" id="kpiLeaderProfit">+€0.00</div>
                     <div class="metric-footer">
-                        <span class="metric-badge dark-green">↗ 342% vs Competitors</span>
+                        <span class="metric-badge dark-green" id="kpiLeaderBadge">Live Arena</span>
                         <span class="metric-sub" id="kpiLeader" style="color: #9CA3AF;">CognitiveSwarmBot</span>
                     </div>
                 </div>
@@ -1352,10 +1353,10 @@ body {
                 <!-- Card 2: White Metric Card (Matches 'Active Users 16,815' in Image) -->
                 <div class="metric-card">
                     <span class="metric-label">Active Auction Cycle</span>
-                    <div class="metric-val" id="kpiRound">Round #1</div>
+                    <div class="metric-val" id="kpiRound">Round #0</div>
                     <div class="metric-footer">
-                        <span class="metric-badge green" id="auctionStatusBadge">AUCTION OPEN</span>
-                        <span class="metric-sub" id="kpiTaskType">Workload Scheduling</span>
+                        <span class="metric-badge green" id="auctionStatusBadge">STANDBY</span>
+                        <span class="metric-sub" id="kpiTaskType">Awaiting Auction</span>
                     </div>
                 </div>
 
@@ -1377,7 +1378,7 @@ body {
                     <div class="metric-val">0 Flags</div>
                     <div class="metric-footer">
                         <span class="metric-badge green">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>100% NeMo Pass
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>100% SLA Compliant
                         </span>
                         <span class="metric-sub">Thermal Safe</span>
                     </div>
@@ -1422,23 +1423,23 @@ body {
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
                         <div style="padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                             <span style="font-size: 11px; color: var(--text-muted); display: block;">Allocative Efficiency</span>
-                            <span id="analyticsEfficiency" style="font-size: 18px; font-weight: 800; color: var(--text-primary); font-family: var(--font-mono);">98.4%</span>
+                            <span id="analyticsEfficiency" style="font-size: 18px; font-weight: 800; color: var(--text-primary); font-family: var(--font-mono);">--</span>
                             <span style="font-size: 10px; color: var(--accent-green-text); font-weight: 600; display: block; margin-top: 2px;">Vickrey Truthful</span>
                         </div>
                         <div style="padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                             <span style="font-size: 11px; color: var(--text-muted); display: block;">Nash Convergence</span>
-                            <span id="analyticsNashRate" style="font-size: 18px; font-weight: 800; color: #1E40AF; font-family: var(--font-mono);">94.7%</span>
+                            <span id="analyticsNashRate" style="font-size: 18px; font-weight: 800; color: #1E40AF; font-family: var(--font-mono);">--</span>
                             <span style="font-size: 10px; color: var(--accent-green-text); font-weight: 600; display: block; margin-top: 2px;">Eq. Stabilized</span>
                         </div>
                         <div style="padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                             <span style="font-size: 11px; color: var(--text-muted); display: block;">Green Solar Arbitrage</span>
-                            <span id="analyticsSolarSavings" style="font-size: 18px; font-weight: 800; color: #D97706; font-family: var(--font-mono);">+€18.60</span>
+                            <span id="analyticsSolarSavings" style="font-size: 18px; font-weight: 800; color: #D97706; font-family: var(--font-mono);">+€0.00</span>
                             <span style="font-size: 10px; color: var(--text-sub); font-weight: 600; display: block; margin-top: 2px;">Zero Carbon Moat</span>
                         </div>
                         <div style="padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                             <span style="font-size: 11px; color: var(--text-muted); display: block;">SLA Breach Protection</span>
                             <span id="analyticsSlaSafety" style="font-size: 18px; font-weight: 800; color: var(--accent-green-text); font-family: var(--font-mono);">100% Pass</span>
-                            <span style="font-size: 10px; color: var(--text-sub); font-weight: 600; display: block; margin-top: 2px;">NVIDIA Guard</span>
+                            <span style="font-size: 10px; color: var(--text-sub); font-weight: 600; display: block; margin-top: 2px;">Capacity Guard</span>
                         </div>
                     </div>
 
@@ -1452,10 +1453,10 @@ body {
                             <svg width="54" height="54" viewBox="0 0 36 36">
                                 <path stroke="#E5E7EB" stroke-width="3.5" fill="none"
                                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path id="dialCapacityRing" stroke="#18191C" stroke-dasharray="65, 100" stroke-width="3.5" stroke-linecap="round" fill="none"
+                                <path id="dialCapacityRing" stroke="#18191C" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" fill="none"
                                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                             </svg>
-                            <span class="dial-center-val" id="dialCapacityVal">65%</span>
+                            <span class="dial-center-val" id="dialCapacityVal">0%</span>
                         </div>
                     </div>
                 </div>
@@ -1556,9 +1557,9 @@ body {
 
                         <div class="sponsor-tags-ribbon" id="sponsorTagsRibbon">
                             <span class="sponsor-chip">Groq LPU: Real-Time AI</span>
-                            <span class="sponsor-chip">NVIDIA NeMo: SLA Guard (Sim)</span>
-                            <span class="sponsor-chip">Meterless: Micro-Metering (Sim)</span>
-                            <span class="sponsor-chip">Zetaris: Virtualized Edge (Sim)</span>
+                            <span class="sponsor-chip">Autonomous SLA Guard</span>
+                            <span class="sponsor-chip">Micro-Core Metering</span>
+                            <span class="sponsor-chip">Distributed Edge Fabric</span>
                         </div>
                     </div>
                 </div>
@@ -1610,38 +1611,6 @@ body {
                 </div>
             </section>
         </main>
-    </div>
-
-    <!-- Groq API Key Configuration Modal -->
-    <div id="groqModal" class="modal-backdrop" style="display: none;">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="font-size: 15px; font-weight: 800; color: #18191C; display: flex; align-items: center; gap: 6px; margin: 0;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    Groq LPU Engine Configuration
-                </h3>
-                <button id="btnCloseGroqModal" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #6B7280; padding: 2px 6px;">✕</button>
-            </div>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5;">
-                Connect your Groq API key to power real-time LLM multi-agent bidding deliberation and critique on ultra-low latency LPUs (&lt;300ms).
-            </p>
-            <div style="margin-bottom: 14px;">
-                <label style="display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 6px;">GROQ API KEY</label>
-                <input id="inputGroqKey" type="password" placeholder="gsk_..." style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 12px; outline: none; box-sizing: border-box;" />
-            </div>
-            <div style="margin-bottom: 18px;">
-                <label style="display: block; font-size: 11px; font-weight: 700; color: #374151; margin-bottom: 6px;">MODEL</label>
-                <select id="selectGroqModel" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 12px; outline: none; box-sizing: border-box;">
-                    <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Recommended)</option>
-                    <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Fastest ~120ms)</option>
-                    <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
-                </select>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button id="btnCancelGroq" class="header-btn" style="padding: 7px 14px; font-size: 12px;">Cancel</button>
-                <button id="btnSaveGroq" class="header-btn btn-primary" style="padding: 7px 16px; font-size: 12px; font-weight: 700;">Save & Activate</button>
-            </div>
-        </div>
     </div>
 
     <!-- Live Arena Controller -->

@@ -35,10 +35,10 @@ async def run_agent(
     node_name: str = "CognitiveSwarmBot (Champion)"
 ):
     print("=" * 65)
-    print("🤖 STARTING SMART EDGE AUCTION BIDDING AGENT")
-    print(f"📡 Target Coordinator : {coordinator_url}")
-    print(f"🎯 Node Identifier     : {node_id}")
-    print(f"🧠 Active Strategy     : {strategy_name.upper()}")
+    print("[AGENT] STARTING SMART EDGE AUCTION BIDDING AGENT")
+    print(f"[*] Target Coordinator : {coordinator_url}")
+    print(f"[*] Node Identifier     : {node_id}")
+    print(f"[*] Active Strategy     : {strategy_name.upper()}")
     print("=" * 65)
 
     state = NodeState(
@@ -58,12 +58,12 @@ async def run_agent(
         success = await client.register_node(state.to_registration_dict())
         if success:
             registered = True
-            print(f"✅ Successfully registered {node_id} on the market!")
+            print(f"[OK] Successfully registered {node_id} on the market!")
             break
         await asyncio.sleep(1.5)
 
     if not registered:
-        print("❌ Could not connect to coordinator. Exiting.")
+        print("[ERROR] Could not connect to coordinator. Exiting.")
         await client.close()
         return
 
@@ -95,12 +95,12 @@ async def run_agent(
                     state.total_bids += 1
                     trace_msg = delib.reasoning_summary if delib else ""
                     print(
-                        f"[AUCTION #{auction.round_number}] 📥 Task '{task.task_id}' "
+                        f"[AUCTION #{auction.round_number}] Task '{task.task_id}' "
                         f"(Req: {task.required_cpu} CPUs, Load: {cpu_load:.1f}%) "
                         f"-> Bidding: €{bid_price:.3f} (Base: €{task.base_cost:.3f}, Max: €{task.max_budget:.3f})"
                     )
                     if delib and delib.steps:
-                        print(f"   🧠 [MULTI-AGENT CONSENSUS]: {delib.reasoning_summary}")
+                        print(f"   [CONSENSUS]: {delib.reasoning_summary}")
 
                     await client.submit_bid(
                         auction_id=auction.auction_id,
@@ -114,7 +114,7 @@ async def run_agent(
                 else:
                     reason = delib.reasoning_summary if delib else "Capacity/Congestion Gate active"
                     print(
-                        f"[AUCTION #{auction.round_number}] ⚠️ Skipping task '{task.task_id}' "
+                        f"[AUCTION #{auction.round_number}] [SKIP] Skipping task '{task.task_id}' "
                         f"(Reason: {reason}, Load: {cpu_load:.1f}%)"
                     )
 
@@ -127,7 +127,7 @@ async def run_agent(
 
                     if outcome.winner_node_id == state.node_id:
                         print(
-                            f"🏆 [ROUND #{outcome.round_number} WON!] "
+                            f"[ROUND #{outcome.round_number} WON] "
                             f"Clearing Price: €{outcome.clearing_price:.3f} | "
                             f"Profit: +€{outcome.profit:.3f} | "
                             f"SLA Violated: {outcome.sla_violated}"
@@ -151,7 +151,7 @@ async def run_agent(
 def main():
     parser = argparse.ArgumentParser(description="Autonomous Edge Bidding Agent")
     parser.add_argument("--url", default=os.getenv("COORDINATOR_URL", "http://localhost:8000"), help="Coordinator URL")
-    parser.add_argument("--strategy", default=os.getenv("STRATEGY", "hybrid"), choices=["hybrid", "zip", "congestion", "qlearn"], help="Strategy name")
+    parser.add_argument("--strategy", default=os.getenv("STRATEGY", "team"), choices=["team", "hybrid", "zip", "congestion", "qlearn"], help="Strategy name")
     parser.add_argument("--node-id", default=os.getenv("NODE_ID", "edge_agent_smart_04"), help="Node ID")
     parser.add_argument("--name", default=os.getenv("NODE_NAME", "CognitiveSwarmBot (Champion)"), help="Node name")
     args = parser.parse_args()

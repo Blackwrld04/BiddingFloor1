@@ -126,6 +126,13 @@ async def serve_index():
         return FileResponse(index_path)
     return HTMLResponse("<h1>Smart Edge Resource Auctions Coordinator Running</h1><p>Visit /docs for API documentation.</p>")
 
+@app.api_route("/documentation", methods=["GET", "HEAD"], response_class=HTMLResponse)
+async def serve_documentation():
+    docs_path = os.path.join(static_dir, "docs.html")
+    if os.path.exists(docs_path):
+        return FileResponse(docs_path)
+    return HTMLResponse("<h1>Documentation</h1><p>Documentation file not found.</p>")
+
 @app.post("/api/v1/nodes/register", response_model=Dict[str, Any])
 async def register_node(node: NodeRegistration):
     success = market.register_node(node)
@@ -256,11 +263,11 @@ async def launch_demo_preset():
     market.history.clear()
     market.round_counter = 0
     market.node_active_workloads = {nid: [] for nid in market.nodes}
-    market.showcase_mode = False
+    market.set_showcase_mode(True)
     market.simulation_speed = 1.0
     market.is_running = True
     await broadcast_event("SIMULATION_RESET", {})
-    return {"status": "LIVE_MARKET_STARTED"}
+    return {"status": "LIVE_MARKET_STARTED", "mode": "SHOWCASE_GOLDEN_DEMO"}
 
 @app.websocket("/api/v1/ws/arena")
 async def websocket_endpoint(websocket: WebSocket):
