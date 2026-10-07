@@ -207,14 +207,4 @@ docker compose up --build
 ```
 Navigate to `http://localhost:8000` to interact with the dashboard.
 
----
 
-## 6-Minute Pitch Guide for Hackathon Judges
-
-| Minute | Segment | Visual / Action | Key Speaking Point |
-| :--- | :--- | :--- | :--- |
-| **0:00 – 1:00** | **The Edge Problem** | Show Dashboard Header & Topology Grid | Centralized schedulers fail in edge-to-cloud continuums. CognitiveSwarm introduces autonomous, market-based multi-agent scheduling. |
-| **1:00 – 2:30** | **Multi-Agent Deliberation** | Click **Run**; point to **Multi-Agent Deliberation Panel** | Walk through the 4 agents: Market Analyst proposes, Capacity Guardian critiques, Green Arbitrage calculates renewable moat, Synthesizer emits consensus with confidence scores. |
-| **2:30 – 3:45** | **Edge Telemetry & Safety** | Point to SLA Policy & Micro-Metering chips | Highlight how CapacityGuardian enforces SLA boundary policies and tracks decentralized edge compute units. |
-| **3:45 – 4:45** | **Game Theory Proof & Leaderboard** | Show **Profit Graph** & **Leaderboard** | Explain why GreedyBot suffers SLA violations while CognitiveSwarm captures +300% profit via Vickrey 2nd-price clearing and green energy arbitrage. |
-| **4:45 – 6:00** | **Q&A & Hackathon Deliverable** | Show modular codebase and test pass suite | Emphasize clean architecture, zero-dependency reproducibility, and direct alignment with Horizon Europe CoGNETs goals. |
