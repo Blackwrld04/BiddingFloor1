@@ -5,7 +5,20 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![Veles Hack 2026](https://img.shields.io/badge/Veles_Hack_2026-Challenge_4:_Autonomous_Edge_Scheduling-0052FF.svg)](#veles-hack-2026-alignment)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-biddingfloor1.onrender.com-00C781.svg)](https://biddingfloor1.onrender.com/)
+[![Video Walkthrough](https://img.shields.io/badge/Video-Watch_Demo_Walkthrough-FF0000.svg)](https://biddingfloor1.onrender.com/demo.mp4)
 [![Tests Passing](https://img.shields.io/badge/tests-9%2F9%20passing-brightgreen.svg)](#test-suite)
+
+---
+
+## 🚀 Live Submission Resources
+
+| Resource | Link | Description |
+| :--- | :--- | :--- |
+| 🎥 **Video Walkthrough (MP4)** | [**Watch Video (Render CDN)**](https://biddingfloor1.onrender.com/demo.mp4) &bull; [**GitHub Raw Video**](https://github.com/Blackwrld04/BiddingFloor1/raw/main/static/demo.mp4) &bull; [**Local Repo Path**](static/demo.mp4) | High-definition screencast walkthrough showcasing the live reverse auction floor, real-time clearing spread, and Groq LPU multi-agent deliberation stream. |
+| 🌐 **Live Web Platform** | [**https://biddingfloor1.onrender.com/**](https://biddingfloor1.onrender.com/) | Real-time interactive dashboard with live WebSockets, auction slider, and autonomous smart agent loop. |
+| 📄 **3-Slide Pitch Deck (PDF)** | [**Download Presentation PDF**](https://biddingfloor1.onrender.com/presentation.pdf) &bull; [**Local PDF**](CognitiveSwarm_VelesHack_Presentation.pdf) | Official 3-slide pitch deck matching the Veles Hack 2026 template ready for Taikai attachment. |
+| 📚 **Technical Documentation** | [**Architecture & Manual**](https://biddingfloor1.onrender.com/documentation) | Comprehensive mathematical and game-theoretic reference manual. |
 
 ---
 

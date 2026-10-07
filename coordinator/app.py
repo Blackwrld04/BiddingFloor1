@@ -141,6 +141,13 @@ async def serve_presentation():
         return FileResponse(pdf_path, media_type="application/pdf", filename="CognitiveSwarm_VelesHack_Presentation.pdf")
     return HTMLResponse("<h1>Presentation PDF Not Found</h1>", status_code=404)
 
+@app.api_route("/demo.mp4", methods=["GET", "HEAD"])
+async def serve_demo_video():
+    video_path = os.path.join(static_dir, "demo.mp4")
+    if os.path.exists(video_path):
+        return FileResponse(video_path, media_type="video/mp4", filename="CognitiveSwarm_Demo.mp4")
+    return HTMLResponse("<h1>Demo Video Not Found</h1>", status_code=404)
+
 @app.post("/api/v1/nodes/register", response_model=Dict[str, Any])
 async def register_node(node: NodeRegistration):
     success = market.register_node(node)

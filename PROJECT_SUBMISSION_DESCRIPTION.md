@@ -6,6 +6,7 @@
 ---
 
 ### Project Links & Resources
+- **Video Walkthrough (MP4 Demo):** [https://biddingfloor1.onrender.com/demo.mp4](https://biddingfloor1.onrender.com/demo.mp4) &bull; [GitHub Raw Video](https://github.com/Blackwrld04/BiddingFloor1/raw/main/static/demo.mp4)
 - **Live Interactive System:** [https://biddingfloor1.onrender.com/](https://biddingfloor1.onrender.com/)
 - **Technical Documentation & Architecture Desk:** [https://biddingfloor1.onrender.com/documentation](https://biddingfloor1.onrender.com/documentation)
 - **3-Slide Presentation Deck (PDF):** [https://biddingfloor1.onrender.com/presentation.pdf](https://biddingfloor1.onrender.com/presentation.pdf)
