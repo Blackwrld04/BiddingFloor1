@@ -12,7 +12,7 @@ from agent.multi_agent.groq_reasoner import GroqReasoner
 
 class MultiAgentDeliberationTeam:
     """
-    Open Agent Hackathon 2026 Collaborative Multi-Agent System.
+    Veles Hack 2026 Collaborative Multi-Agent System.
     Powered by Groq LPUs for real-time AI reasoning, with local
     game-theoretic deterministic fallback.
     - MarketAnalyst (Proposer)

@@ -7,7 +7,7 @@ from agent.multi_agent.models import DeliberationResult
 
 class MultiAgentReasoningStrategy(BaseBiddingStrategy):
     """
-    Open Agent Hackathon 2026 Champion Strategy:
+    Veles Hack 2026 Challenge 4 Autonomous Bidding Strategy:
     Full Multi-Agent Deliberation & Explainable Consensus.
     """
     def __init__(self):

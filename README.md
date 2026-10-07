@@ -1,10 +1,10 @@
 # CognitiveSwarm: Smart Edge Resource Auctions
-### Dual-Track Flagship: Veles Hack 2026 (Challenge 4) & Open Agent Hackathon 2026 (Track 4)
+### Flagship Submission: Veles Hack 2026 (Challenge 4)
 > **Autonomous Multi-Agent Deliberation, Game-Theoretic Edge Auctions & Decentralized Resource Scheduling**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
-[![Open Agent Hackathon](https://img.shields.io/badge/Open_Agent_Hackathon-Track_4:_Reasoning_Architecture-8A2BE2.svg)](#open-agent-hackathon-2026-alignment)
+[![Veles Hack 2026](https://img.shields.io/badge/Veles_Hack_2026-Challenge_4:_Autonomous_Edge_Scheduling-0052FF.svg)](#veles-hack-2026-alignment)
 [![Tests Passing](https://img.shields.io/badge/tests-9%2F9%20passing-brightgreen.svg)](#test-suite)
 
 ---
@@ -61,12 +61,12 @@ The result: **0 SLA degradation penalties**, mathematically dominant profit clea
 
 ---
 
-## Open Agent Hackathon 2026 Alignment
+## Veles Hack 2026 (Challenge 4) Alignment
 
-| Hackathon Dimension | How CognitiveSwarm Fulfills & Excels |
+| Challenge Dimension | How CognitiveSwarm Fulfills & Excels |
 | :--- | :--- |
-| **Track 4: Reasoning Architecture** | Avoids linear pipelines ($A \to B \to C$). Features an active **critique and veto loop** where the `CapacityGuardian` blocks bids when node load $> 85\%$ or when low-margin tasks threaten future high-value workloads. Emits step-by-step thought traces to the live dashboard. |
-| **Track 3: Developer & Edge Infrastructure** | Solves decentralized edge workload scheduling using real-time WebSockets, microsecond telemetry, and modular bidding plug-ins. |
+| **Challenge 4: Edge Resource Allocation** | Solves decentralized edge workload scheduling using game-theoretic reverse Vickrey auctions, real-time WebSockets, microsecond telemetry, and modular bidding plug-ins. |
+| **Autonomous Multi-Agent Deliberation** | Avoids linear pipelines ($A \to B \to C$). Features an active **critique and veto loop** where the `CapacityGuardian` blocks bids when node load $> 85\%$ or when low-margin tasks threaten future high-value workloads. Emits step-by-step thought traces to the live dashboard. |
 | **Explainability & Transparency** | Every bid submitted to the coordinator includes a full `deliberation_steps` array, `confidence` score, and live telemetry inspector visible in the web UI. |
 
 ---
