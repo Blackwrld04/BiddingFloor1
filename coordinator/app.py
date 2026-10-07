@@ -134,6 +134,13 @@ async def serve_documentation():
         return FileResponse(docs_path)
     return HTMLResponse("<h1>Documentation</h1><p>Documentation file not found.</p>")
 
+@app.api_route("/presentation.pdf", methods=["GET", "HEAD"])
+async def serve_presentation():
+    pdf_path = os.path.join(static_dir, "presentation.pdf")
+    if os.path.exists(pdf_path):
+        return FileResponse(pdf_path, media_type="application/pdf", filename="CognitiveSwarm_VelesHack_Presentation.pdf")
+    return HTMLResponse("<h1>Presentation PDF Not Found</h1>", status_code=404)
+
 @app.post("/api/v1/nodes/register", response_model=Dict[str, Any])
 async def register_node(node: NodeRegistration):
     success = market.register_node(node)
