@@ -19,6 +19,8 @@ CognitiveSwarm eliminates centralized edge scheduling bottlenecks, reactive SLA 
 
 A complete screencast walkthrough of the CognitiveSwarm platform with synchronized AI neural voiceover, demonstrating live reverse auction execution, Vickrey second-price clearing, cumulative profit margin dynamics, the 6-node Valencia edge cluster topology, and real-time Groq LPU multi-agent deliberation.
 
+[![CognitiveSwarm_Demo (1).mp4 Walkthrough](static/demo_video_card.jpg)](https://biddingfloor1.onrender.com/demo.mp4)
+
 https://github.com/Blackwrld04/BiddingFloor1/raw/main/static/demo.mp4
 
 The walkthrough demonstrates an end-to-end autonomous bidding cycle: task specification broadcasting, continuous reverse auction bidding against competing Nash, dominant, and aggressive bots, margin preservation via Capacity Guardian vetoes, 85% renewable solar tariff inversion, and live multi-agent consensus telemetry.
@@ -324,6 +326,8 @@ Navigate to `http://localhost:8000` to interact with the dashboard.
 | [`static/js/app.js`](static/js/app.js) | Dynamic frontend state machine, Chart.js cumulative profit curve, and WebSocket handler |
 | [`static/css/style.css`](static/css/style.css) | Custom modern CSS design system with glassmorphism, glowing telemetry badges, and responsive grid |
 | [`static/demo.mp4`](static/demo.mp4) | High-definition screencast walkthrough (1m 45s) with synchronized neural AI voiceover |
+| [`static/demo_video_card.jpg`](static/demo_video_card.jpg) | High-resolution video player embed card matching GitHub media widget design |
+| [`static/demo_poster.jpg`](static/demo_poster.jpg) | Uncompressed 1080p dashboard poster frame captured from live reverse auction floor |
 | [`CognitiveSwarm_VelesHack_Presentation.pdf`](CognitiveSwarm_VelesHack_Presentation.pdf) | Official 3-slide executive pitch deck PDF formatted for Veles Hack 2026 Taikai submission |
 | [`PROJECT_SUBMISSION_DESCRIPTION.md`](PROJECT_SUBMISSION_DESCRIPTION.md) | Complete copy-paste submission description formatted for the Taikai portal |
 | [`run_simulation.py`](run_simulation.py) | Single-command launcher orchestrating coordinator, competitor bots, and CognitiveSwarm |
