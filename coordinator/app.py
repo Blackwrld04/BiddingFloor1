@@ -127,6 +127,7 @@ async def serve_index():
     return HTMLResponse("<h1>Smart Edge Resource Auctions Coordinator Running</h1><p>Visit /docs for API documentation.</p>")
 
 @app.api_route("/documentation", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/docs.html", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def serve_documentation():
     docs_path = os.path.join(static_dir, "docs.html")
     if os.path.exists(docs_path):
