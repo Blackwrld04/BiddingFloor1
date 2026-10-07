@@ -416,6 +416,7 @@
             <div class="sidebar-section-title">Core Architecture</div>
             <ul class="toc-list">
                 <li><a href="#overview" class="toc-link active">Executive Summary</a></li>
+                <li><a href="#operational-desk" class="toc-link">Procurement & Bidding Desk</a></li>
                 <li><a href="#multi-agent" class="toc-link">4-Agent Deliberation Team</a></li>
                 <li><a href="#groq-lpu" class="toc-link">Groq LPU Acceleration</a></li>
                 <li><a href="#edge-telemetry" class="toc-link">Edge Telemetry & Safety</a></li>
@@ -459,7 +460,85 @@
                 </div>
             </section>
 
-            <!-- 2. Multi-Agent Deliberation Architecture -->
+            <!-- 2. Operational Specification: Procurement & Bidding Desk -->
+            <section id="operational-desk" class="doc-section">
+                <span class="section-tag">Operational Specification</span>
+                <h2 class="section-title">Procurement & Bidding Desk: How CognitiveSwarm Operates</h2>
+                <p class="doc-paragraph">
+                    <strong>CognitiveSwarm</strong> is an autonomous procurement and scheduling agent for decentralized edge compute slots. It monitors the live auction market floor and determines when to bid, when to exercise strategic patience, and how to price tasks at maximum profitable margin under strict hardware constraints.
+                </p>
+                <p class="doc-paragraph">
+                    <em>In short: CognitiveSwarm makes edge compute procurement and workload scheduling more deliberate by combining live market conditions, node capacity guardrails, renewable tariff arbitrage, and executable consensus checks.</em>
+                </p>
+
+                <div class="callout-box purple">
+                    <div class="callout-title">The Product Surfaces</div>
+                    <div class="callout-text">
+                        • <strong>Market Desk (Live Arena):</strong> Real-time reverse auction feed, market contention metrics, and live multi-agent deliberation stream.<br>
+                        • <strong>Capacity & Hardware Inspector:</strong> Live 6-node topology grid with discrete core allocation blocks, thermal headroom monitors, and power source tags (85% Solar vs. Grid).<br>
+                        • <strong>Decision History & Ledger:</strong> Complete audit record of every auction with timestamp, action (BID or SKIP), nominal price, confidence score, and step-by-step reasoning.<br>
+                        • <strong>Performance & Outcome Desk:</strong> Confirmed clearing outcomes, revenue, gross profit margins, and cumulative profit curves versus 5 competitor bots.
+                    </div>
+                </div>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">How CognitiveSwarm Decides: BID or SKIP</h3>
+                <p class="doc-paragraph">
+                    CognitiveSwarm does not invent market data; it evaluates incoming tasks against real physical hardware capacity, buyer budgets, and game-theoretic market depth:
+                </p>
+
+                <div class="math-block" style="text-align: left; font-size: 11px; line-height: 1.6;">
+[Live Auction Task]
+        │
+        ▼
+[Margin & Budget Analysis] ──(Meager budget expansion? < 1.7x)──► [Strategic Patience Loop]
+        │                                                                     │
+        ▼                                                                     ▼
+[Capacity Guardian Check]  ──(Projected Node Load > 85%?)───────► [VETO: TASK_SKIPPED]
+        │
+        ▼
+[Green Tariff Moat Inversion] (Exploits 85% Solar vs Competitor Grid Power)
+        │
+        ▼
+[Consensus Synthesizer Review] (Validates Calibrated Confidence & SLA Safety)
+        │
+        ▼
+[EXECUTABLE BID SUBMITTED] (Enters Reverse Vickrey 2nd-Price Clearing)
+                </div>
+
+                <p class="doc-paragraph">
+                    You configure three operational boundaries: baseline physical cost threshold, maximum allowable core load (hard cap at 85%), and minimum gross margin ratio. 
+                </p>
+                <p class="doc-paragraph">
+                    CognitiveSwarm then inspects live hardware depth. A task qualifies when available physical cores comfortably accommodate the requested CPU duration without exceeding the 85% ceiling. If no qualifying capacity exists, the Capacity Guardian raises an immediate objection and skips the round. Furthermore, before any bid is presented, CognitiveSwarm executes a critique loop: if the node is moderately loaded (>45%) and the buyer's budget offers meager expansion (<1.7x), the agent exercises <strong>strategic patience</strong>, preserving headroom for future high-margin federated learning or SLAM robotics workloads.
+                </p>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">Market Data and Auction Floor Depth</h3>
+                <p class="doc-paragraph">
+                    Market snapshots are broadcast via WebSocket from the auction coordinator. CognitiveSwarm normalizes each task to CPU cores required, RAM memory required, execution duration, and buyer maximum budget. The Market Desk shows current task parameters, lowest competitor bid estimates, active node load, and green energy arbitrage factors.
+                </p>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">Decision Review and Executable Consensus</h3>
+                <p class="doc-paragraph">
+                    The deliberation separates theoretical pricing from executable market bids. While the Market Analyst may suggest an aggressive entry bid, the Capacity Guardian validates physical feasibility against real hardware limits, and the Green Arbitrageur inverts the coordinator's eco-discount formula. A bid is presented to the market only when all four agents reach unanimous consensus.
+                </p>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">Execution and Telemetry Ledger</h3>
+                <p class="doc-paragraph">
+                    Once a bid is submitted, the reverse Vickrey auction clears. If CognitiveSwarm wins, payment is determined by the second-lowest competitor bid (or buyer max budget). Live telemetry records the micro-metered runtime units and attaches SLA safety verification badges to the local execution ledger.
+                </p>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">Performance and Outcome Evaluation</h3>
+                <p class="doc-paragraph">
+                    The Performance Desk tracks both submitted bids and skipped tasks, but <strong>only confirmed won rounds enter revenue, cost, and gross profit totals</strong>. Tasks that were vetoed or skipped are audited in the decision ledger with explicit reasoning traces, demonstrating that skipping low-margin work is an intentional, margin-accretive strategy rather than a missed opportunity.
+                </p>
+
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 24px 0 12px 0;">Operational Assumptions & Edge Fail-safes</h3>
+                <p class="doc-paragraph">
+                    Edge markets can be volatile. Extreme contention or bursty task arrivals can momentarily fill cluster capacity. CognitiveSwarm handles this gracefully: if Groq LPU inference experiences network latency or rate pacing, the system seamlessly transitions to its local deterministic game-theoretic engine with 0ms downtime.
+                </p>
+            </section>
+
+            <!-- 3. Multi-Agent Deliberation Architecture -->
             <section id="multi-agent" class="doc-section">
                 <span class="section-tag">Track 4: Reasoning Architecture</span>
                 <h2 class="section-title">The 4-Agent Deliberation Team</h2>

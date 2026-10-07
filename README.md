@@ -24,6 +24,43 @@ The result: **0 SLA degradation penalties**, mathematically dominant profit clea
 
 ---
 
+## Operational Specification: How CognitiveSwarm Decides BID vs SKIP
+
+> **In short:** CognitiveSwarm makes edge compute procurement and workload scheduling more deliberate by combining live market conditions, node capacity guardrails, renewable tariff arbitrage, and executable consensus checks.
+
+### Product Surfaces
+* **Market Desk (Live Arena):** Real-time reverse auction feed, market contention metrics, and live multi-agent deliberation stream.
+* **Capacity & Hardware Inspector:** Live 6-node topology grid with discrete core allocation blocks, thermal headroom monitors, and power source tags (85% Solar vs. Grid).
+* **Decision History & Ledger:** Complete audit record of every auction with timestamp, action (BID or SKIP), nominal price, confidence score, and step-by-step reasoning.
+* **Performance & Outcome Desk:** Confirmed clearing outcomes, revenue, gross profit margins, and cumulative profit curves versus 5 competitor bots.
+
+### Decision Pipeline
+```
+[Live Auction Task]
+        │
+        ▼
+[Margin & Budget Analysis] ──(Meager budget expansion? < 1.7x)──► [Strategic Patience Loop]
+        │                                                                     │
+        ▼                                                                     ▼
+[Capacity Guardian Check]  ──(Projected Node Load > 85%?)───────► [VETO: TASK_SKIPPED]
+        │
+        ▼
+[Green Tariff Moat Inversion] (Exploits 85% Solar vs Competitor Grid Power)
+        │
+        ▼
+[Consensus Synthesizer Review] (Validates Calibrated Confidence & SLA Safety)
+        │
+        ▼
+[EXECUTABLE BID SUBMITTED] (Enters Reverse Vickrey 2nd-Price Clearing)
+```
+
+1. **Capacity Qualification:** Requested CPU cores must comfortably fit available cores without exceeding the 85% utilization threshold. Overload causes an instant veto.
+2. **Strategic Patience:** If current load exceeds 45% and the task offers meager budget expansion (<1.7x base cost), CognitiveSwarm skips the task to preserve CPU headroom for high-margin enterprise workloads (e.g., federated learning, SLAM robotics).
+3. **Green Solar Inversion:** Bids are priced higher nominally to maximize gross margins (+15% to +25%) while exploiting the coordinator's green discount factor to ensure the lowest effective score.
+4. **Execution Ledger:** Only confirmed won auctions enter revenue and profit totals. Vetoed and skipped tasks are logged with explicit reasoning traces in the audit trail.
+
+---
+
 ## Open Agent Hackathon 2026 Alignment
 
 | Hackathon Dimension | How CognitiveSwarm Fulfills & Excels |
