@@ -954,7 +954,7 @@ body {
     color: var(--accent-green-text);
 }
 
-.sponsor-tags-ribbon {
+.telemetry-tags-ribbon {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
@@ -963,7 +963,7 @@ body {
     border-top: 1px solid var(--border-subtle);
 }
 
-.sponsor-chip {
+.telemetry-chip {
     font-size: 11px;
     font-family: var(--font-mono);
     color: var(--text-secondary);

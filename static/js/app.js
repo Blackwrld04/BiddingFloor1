@@ -290,7 +290,7 @@ function renderIncomingBid(bid) {
 function renderDeliberationStream(data) {
     const stream = document.getElementById('deliberationStream');
     const badge = document.getElementById('traceConfidenceBadge');
-    const ribbon = document.getElementById('sponsorTagsRibbon');
+    const ribbon = document.getElementById('telemetryTagsRibbon');
     if (!stream) return;
 
     // Update confidence badge
@@ -311,9 +311,9 @@ function renderDeliberationStream(data) {
         badge.style.border = 'none';
     }
 
-    // Update sponsor tags ribbon
-    if (ribbon && data.sponsor_telemetry) {
-        const tel = data.sponsor_telemetry;
+    // Update live telemetry ribbon
+    if (ribbon && (data.sponsor_telemetry || data.telemetry)) {
+        const tel = data.sponsor_telemetry || data.telemetry;
         let html = '';
 
         // Groq LPU inference tag
@@ -321,28 +321,28 @@ function renderDeliberationStream(data) {
         if (tel.groq_inference) {
             const isLive = tel.groq_inference.status === 'ACTIVE_LPU';
             const latText = isLive ? `${tel.groq_inference.latency_ms}ms` : 'Ready';
-            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.5); color: #FB923C; font-weight:700;">Groq LPU: ${latText}</span>`;
+            html += `<span class="telemetry-chip" style="border-color: rgba(249, 115, 22, 0.5); color: #FB923C; font-weight:700;">Groq LPU: ${latText}</span>`;
             if (groqBadge && isLive) {
                 groqBadge.textContent = `Groq LPU (${tel.groq_inference.latency_ms}ms)`;
                 groqBadge.style.color = '#FB923C';
             }
         } else {
-            html += `<span class="sponsor-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">Groq LPU: Real-Time AI</span>`;
+            html += `<span class="telemetry-chip" style="border-color: rgba(249, 115, 22, 0.4); color: #FB923C;">Groq LPU: Real-Time AI</span>`;
         }
 
         // Native Edge Telemetry Chips
         const guard = tel.sla_guardrail;
         if (guard) {
             const status = guard.status === 'COMPLIANT' || guard.status === 'POLICY_APPROVED' ? 'PASS' : 'FLAGGED';
-            html += `<span class="sponsor-chip">SLA Policy: ${status}</span>`;
+            html += `<span class="telemetry-chip">SLA Policy: ${status}</span>`;
         } else {
-            html += `<span class="sponsor-chip">SLA Policy: Active</span>`;
+            html += `<span class="telemetry-chip">SLA Policy: Active</span>`;
         }
         if (tel.compute_metering) {
-            html += `<span class="sponsor-chip">Micro-Metering: Active</span>`;
+            html += `<span class="telemetry-chip">Micro-Metering: Active</span>`;
         }
         if (tel.cluster_telemetry) {
-            html += `<span class="sponsor-chip">Edge Fabric: Online</span>`;
+            html += `<span class="telemetry-chip">Edge Fabric: Online</span>`;
         }
         ribbon.innerHTML = html;
     }
